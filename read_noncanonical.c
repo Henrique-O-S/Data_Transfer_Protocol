@@ -90,18 +90,22 @@ int main(int argc, char *argv[])
 
     // Loop for input
     unsigned char buf[BUF_SIZE + 1] = {0}; // +1: Save space for the final '\0' char
+    unsigned char localbuf[BUF_SIZE + 1] = {0};
     unsigned int count = 0;
+    unsigned int bytes;
+
+    unsigned int len = 0;
     
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
-        // Returns after 5 chars have been input
         int bytes = read(fd, buf, 1);
-
-        printf(":%s:%d\n", buf, bytes);
-        if (buf[count] == '\0')
+        strcat(localbuf, buf);
+        len++;
+        if (buf == '\0')
             break;
     }
-
+printf("Read %d bytes \n", len);
+printf("%.*s",len,localbuf);
     // The while() cycle should be changed in order to respect the specifications
     // of the protocol indicated in the Lab guide
 
