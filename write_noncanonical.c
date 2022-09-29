@@ -93,13 +93,6 @@ int main(int argc, char *argv[])
     unsigned char buf[BUF_SIZE] = {0};
     gets(buf);
 
-    /*
-    for (int i = 0; i < BUF_SIZE; i++)
-    {
-        buf[i] = 'a' + i % 26;
-    }
-    */
-
     // In non-canonical mode, '\n' does not end the writing.
     // Test this condition by placing a '\n' in the middle of the buffer.
     // The whole buffer must be sent even with the '\n'.
@@ -109,12 +102,22 @@ int main(int argc, char *argv[])
 
     // Wait until all bytes have been written to the serial port
     sleep(1);
-/*
-    while(STOP==FALSE){
-    
+
+    buf[BUF_SIZE];
+    unsigned char localbuf[BUF_SIZE] = {0};
+    unsigned int count = 0;
+    unsigned int len = 0;
+
+    for (unsigned int count = 0; count < BUF_SIZE; count++)
+    {
+        bytes = read(fd, buf, 1);
+        strcat(localbuf, buf);
+        len++;
+        if (buf == '\0')
+            break;
     }
-*/
-    printf("%d bytes written\n", bytes);
+
+    printf("%.*s",len,localbuf);
 
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
@@ -122,6 +125,8 @@ int main(int argc, char *argv[])
         perror("tcsetattr");
         exit(-1);
     }
+
+
 
     close(fd);
 

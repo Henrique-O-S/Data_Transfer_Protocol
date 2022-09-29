@@ -104,8 +104,11 @@ int main(int argc, char *argv[])
         if (buf == '\0')
             break;
     }
-printf("Read %d bytes \n", len);
-printf("%.*s",len,localbuf);
+    printf("%.*s",len,localbuf);
+
+    write(fd, localbuf, BUF_SIZE + 1);
+
+    sleep(1);
     // The while() cycle should be changed in order to respect the specifications
     // of the protocol indicated in the Lab guide
 
