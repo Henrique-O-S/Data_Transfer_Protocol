@@ -101,12 +101,15 @@ int main(int argc, char *argv[])
         int bytes = read(fd, buf, 1);
         strcat(localbuf, buf);
         len++;
-        if (buf == '\0')
+        if (localbuf[len-1] == '\0'){
             break;
+        }
     }
-    printf("%.*s",len,localbuf);
+    tcflush(fd, TCIOFLUSH);
+    printf("%s",localbuf);
 
-    write(fd, localbuf, BUF_SIZE + 1);
+
+    write(fd, localbuf, len);
 
     sleep(1);
     // The while() cycle should be changed in order to respect the specifications
