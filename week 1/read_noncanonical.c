@@ -108,8 +108,7 @@ int main(int argc, char *argv[])
     tcflush(fd, TCIOFLUSH);
     printf("%s",localbuf);
 
-
-    write(fd, localbuf, len);
+    write(fd, localbuf, BUF_SIZE);
 
     sleep(1);
     // The while() cycle should be changed in order to respect the specifications
@@ -126,3 +125,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+

@@ -102,8 +102,9 @@ int main(int argc, char *argv[])
 
     // Wait until all bytes have been written to the serial port
     sleep(1);
+    memset(buf, 0, sizeof(buf));
 
-    buf[BUF_SIZE];
+    
     unsigned char localbuf[BUF_SIZE] = {0};
     unsigned int count = 0;
     unsigned int len = 0;
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
             break;
     }
 
-    printf("%.*s",len,localbuf);
+    printf("%s",localbuf);
 
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
@@ -132,3 +133,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
