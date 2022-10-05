@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
+#include <stdio.h>
 
 // Baudrate settings are defined in <asm/termbits.h>, which is
 // included by <termios.h>
@@ -22,6 +24,46 @@
 #define BUF_SIZE 256
 
 volatile int STOP = FALSE;
+
+int alarmEnabled = FALSE;
+int alarmCount = 0;
+
+unsigned char buf[BUF_SIZE + 1] = {0}; // +1: Save space for the final '\0' char
+unsigned char localbuf[BUF_SIZE + 1] = {0};
+unsigned int count = 0;
+unsigned int bytes;
+int fd, len, empty = 1;
+
+void alarmHandler(int signal)
+{
+    /* empty = 1;
+    memset(buf, 0, sizeof(buf));
+    memset(localbuf, 0, sizeof(localbuf));
+    for (unsigned int count = 0; count < BUF_SIZE; count++)
+    {
+        bytes = read(fd, buf, 1);
+        if (bytes == 1 && empty == 1)
+        {
+            empty = 0;
+        }
+        strcat(localbuf, buf);
+        len++;
+        if (buf == '\0')
+        {
+            break;
+        }
+    }
+    if (empty == 0)
+    {
+        write(fd, localbuf, BUF_SIZE);
+        sleep(1);
+    } */
+
+    alarmEnabled = FALSE;
+    alarmCount++;
+
+    printf("Alarm #%d\n", alarmCount);
+}
 
 int main(int argc, char *argv[])
 {
@@ -89,28 +131,37 @@ int main(int argc, char *argv[])
     printf("New termios structure set\n");
 
     // Loop for input
-    unsigned char buf[BUF_SIZE + 1] = {0}; // +1: Save space for the final '\0' char
-    unsigned char localbuf[BUF_SIZE + 1] = {0};
-    unsigned int count = 0;
-    unsigned int bytes;
 
-    unsigned int len = 0;
-    
+    len = 0;
+
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
-        int bytes = read(fd, buf, 1);
+        bytes = read(fd, buf, 1);
         strcat(localbuf, buf);
         len++;
-        if (localbuf[len-1] == '\0'){
+        if (localbuf[len - 1] == '\0')
+        {
             break;
         }
     }
-    tcflush(fd, TCIOFLUSH);
-    printf("%s",localbuf);
+
+    printf("%s", localbuf);
 
     write(fd, localbuf, BUF_SIZE);
 
-    sleep(1);
+    sleep(10);
+
+    (void)signal(SIGALRM, alarmHandler);
+    while (alarmCount < 3)
+    {
+        if (alarmEnabled == FALSE)
+        {
+            alarm(3); // Set alarm to be triggered in 3s
+            alarmEnabled = TRUE;
+        }
+    }
+
+
     // The while() cycle should be changed in order to respect the specifications
     // of the protocol indicated in the Lab guide
 

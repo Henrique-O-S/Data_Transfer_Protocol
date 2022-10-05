@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
+#include <stdio.h>
 
 // Baudrate settings are defined in <asm/termbits.h>, which is
 // included by <termios.h>
@@ -22,6 +24,34 @@
 #define BUF_SIZE 256
 
 volatile int STOP = FALSE;
+
+int alarmEnabled = FALSE;
+int alarmCount = 0;
+
+unsigned char buf[BUF_SIZE] = {0};
+unsigned char bufcopy[BUF_SIZE] = {0};
+unsigned char localbuf[BUF_SIZE] = {0};
+int fd, len, count;
+
+void alarmHandler(int signal)
+{
+    int bytes = write(fd, bufcopy, BUF_SIZE);
+    sleep(1);
+    memset(buf, 0, sizeof(buf));
+    memset(localbuf, 0, sizeof(localbuf));
+    for (unsigned int count = 0; count < BUF_SIZE; count++)
+    {
+        bytes = read(fd, buf, 1);
+        strcat(localbuf, buf);
+        len++;
+        if (buf == '\0')
+            break;
+    }
+    alarmEnabled = FALSE;
+    alarmCount++;
+
+    printf("Alarm #%d\n", alarmCount);
+}
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +70,7 @@ int main(int argc, char *argv[])
 
     // Open serial port device for reading and writing, and not as controlling tty
     // because we don't want to get killed if linenoise sends CTRL-C.
-    int fd = open(serialPortName, O_RDWR | O_NOCTTY);
+    fd = open(serialPortName, O_RDWR | O_NOCTTY);
 
     if (fd < 0)
     {
@@ -90,13 +120,15 @@ int main(int argc, char *argv[])
     printf("New termios structure set\n");
 
     // Create string to send
-    unsigned char buf[BUF_SIZE] = {0};
+
     gets(buf);
 
     // In non-canonical mode, '\n' does not end the writing.
     // Test this condition by placing a '\n' in the middle of the buffer.
     // The whole buffer must be sent even with the '\n'.
-    buf[BUF_SIZE-1] = '\n';
+    buf[BUF_SIZE - 1] = '\n';
+
+    strcat(bufcopy, buf);
 
     int bytes = write(fd, buf, BUF_SIZE);
 
@@ -104,10 +136,8 @@ int main(int argc, char *argv[])
     sleep(1);
     memset(buf, 0, sizeof(buf));
 
-    
-    unsigned char localbuf[BUF_SIZE] = {0};
-    unsigned int count = 0;
-    unsigned int len = 0;
+    count = 0;
+    len = 0;
 
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
@@ -118,7 +148,24 @@ int main(int argc, char *argv[])
             break;
     }
 
-    printf("%s",localbuf);
+    if (strcmp(localbuf, bufcopy) == 0)
+    {
+        (void)signal(SIGALRM, alarmHandler);
+        while (alarmCount < 3)
+        {
+            if (alarmEnabled == FALSE)
+            {
+                alarm(3); // Set alarm to be triggered in 3s
+                if (strcmp(localbuf, bufcopy) == 1)
+                {
+                    break;
+                }
+                alarmEnabled = TRUE;
+            }
+        }
+    }
+
+    printf("%s", localbuf);
 
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
@@ -126,8 +173,6 @@ int main(int argc, char *argv[])
         perror("tcsetattr");
         exit(-1);
     }
-
-
 
     close(fd);
 
