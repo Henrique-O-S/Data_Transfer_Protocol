@@ -32,21 +32,27 @@ unsigned char buf[BUF_SIZE] = {0};
 unsigned char bufcopy[BUF_SIZE] = {0};
 unsigned char localbuf[BUF_SIZE] = {0};
 int fd, len, count;
+int alarmBreak = FALSE;
 
 void alarmHandler(int signal)
 {
     int bytes = write(fd, bufcopy, BUF_SIZE);
     sleep(1);
-    memset(buf, 0, sizeof(buf));
-    memset(localbuf, 0, sizeof(localbuf));
+    unsigned char localbuf[BUF_SIZE] = {0};
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
         bytes = read(fd, buf, 1);
-        strcat(localbuf, buf);
+        strncat(localbuf, &buf[0], 1);
         len++;
-        if (buf == '\0')
+        if (localbuf[len-1] == '\0'){
             break;
+        }
     }
+
+    if (strcmp(localbuf, bufcopy) == 1){
+        alarmBreak = TRUE;
+    }
+
     alarmEnabled = FALSE;
     alarmCount++;
 
@@ -134,21 +140,29 @@ int main(int argc, char *argv[])
 
     // Wait until all bytes have been written to the serial port
     sleep(1);
-    memset(buf, 0, sizeof(buf));
 
+    unsigned char localbuf[BUF_SIZE] = {0};
     count = 0;
     len = 0;
 
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
         bytes = read(fd, buf, 1);
-        strcat(localbuf, buf);
+        strncat(localbuf, &buf[0], 1);
         len++;
-        if (buf == '\0')
+        if (localbuf[len-1] == '\0'){
             break;
+        }
+    }
+    //printf("%s\n", localbuf);
+
+    for (unsigned int count = 0; count < len; count++)
+    {
+        printf("%c ", localbuf[count]);
+        printf("%c\n", bufcopy[count]);
     }
 
-    if (strcmp(localbuf, bufcopy) == 0)
+    if (strcmp(localbuf, bufcopy) == 1)
     {
         (void)signal(SIGALRM, alarmHandler);
         while (alarmCount < 3)
@@ -156,16 +170,15 @@ int main(int argc, char *argv[])
             if (alarmEnabled == FALSE)
             {
                 alarm(3); // Set alarm to be triggered in 3s
-                if (strcmp(localbuf, bufcopy) == 1)
-                {
-                    break;
-                }
                 alarmEnabled = TRUE;
+            }
+            else if(alarmBreak == TRUE){
+                break;            
             }
         }
     }
 
-    printf("%s", localbuf);
+    printf("%s\n", localbuf);
 
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
