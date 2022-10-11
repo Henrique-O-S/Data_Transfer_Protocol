@@ -30,18 +30,16 @@ int alarmCount = 0;
 
 unsigned char buf[BUF_SIZE] = {0};
 unsigned char bufcopy[BUF_SIZE] = {0};
-unsigned char localbuf[BUF_SIZE] = {0};
 int fd, len, count;
 int alarmBreak = FALSE;
 
 void alarmHandler(int signal)
 {
-    int bytes = write(fd, bufcopy, BUF_SIZE);
     sleep(1);
     unsigned char localbuf[BUF_SIZE] = {0};
     for (unsigned int count = 0; count < BUF_SIZE; count++)
     {
-        bytes = read(fd, buf, 1);
+        int bytes = read(fd, buf, 1);
         strncat(localbuf, &buf[0], 1);
         len++;
         if (localbuf[len-1] == '\0'){
@@ -49,8 +47,11 @@ void alarmHandler(int signal)
         }
     }
 
-    if (strcmp(localbuf, bufcopy) == 1){
-        alarmBreak = TRUE;
+    if (strcmp(localbuf, bufcopy) != 0 && alarmCount < 3){
+        write(fd, bufcopy, BUF_SIZE);
+    }
+    else if(strcmp(localbuf, bufcopy) != 0 && alarmCount == 3){
+        STOP = TRUE;
     }
 
     alarmEnabled = FALSE;
@@ -156,30 +157,32 @@ int main(int argc, char *argv[])
     }
     //printf("%s\n", localbuf);
 
+    /*
     for (unsigned int count = 0; count < len; count++)
     {
         printf("%c ", localbuf[count]);
         printf("%c\n", bufcopy[count]);
     }
+    */
 
-    if (strcmp(localbuf, bufcopy) == 1)
+    if (strcmp(localbuf, bufcopy) != 0)
     {
         (void)signal(SIGALRM, alarmHandler);
-        while (alarmCount < 3)
+        while (alarmCount < 4)
         {
             if (alarmEnabled == FALSE)
             {
                 alarm(3); // Set alarm to be triggered in 3s
                 alarmEnabled = TRUE;
             }
-            else if(alarmBreak == TRUE){
-                break;            
-            }
         }
     }
 
-    printf("%s\n", localbuf);
-
+    if(!STOP){
+        printf("%s\n", localbuf);
+    } else{
+        printf("Invalid or Null Response");
+    }
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
     {
