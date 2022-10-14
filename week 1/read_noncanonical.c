@@ -135,42 +135,61 @@ int main(int argc, char *argv[])
     // Loop for input
 
     unsigned char localbuf[BUF_SIZE + 1] = {0};
-    len = 0;
+    unsigned char localbufcpy[BUF_SIZE + 1] = {0};
+
+    
 
     clock_t start, end;
     double cpu_time_used; 
+    unsigned char disclosure[BUF_SIZE + 1] = "Fecha a loja"; // +1: Save space for the final '\0' char
 
-    for (unsigned int count = 0; count < BUF_SIZE; count++){
-        start = clock();
-        bytes = read(fd, buf, 1);
-        if (bytes == 0){
-            end = clock();
-            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-            if (cpu_time_used > 3){
-                printf("Read Time Exceeded");
-                if (tcsetattr(fd, TCSANOW, &oldtio) == -1){
-                    perror("tcsetattr");
-                    exit(-1);
+    do{
+        len = 0;
+        for (unsigned int count = 0; count < BUF_SIZE; count++){
+            start = clock();
+            bytes = read(fd, buf, 1);
+            printf("%s\n",buf);
+            if (bytes == 0){
+                end = clock();
+                cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+                if (cpu_time_used > 3){
+                    printf("Read Time Exceeded");
+                    if (tcsetattr(fd, TCSANOW, &oldtio) == -1){
+                        perror("tcsetattr");
+                        exit(-1);
+                    }
+
+                    close(fd);
+
+                    return 0;
                 }
-
-                close(fd);
-
-                return 0;
+            }
+            else{
+                strncat(localbuf, &buf[0], 1);
+                printf("%s\n", localbuf);
+                len++;
+                if (localbuf[len - 1] == '\0')
+                {
+                    printf("break\n");
+                    break;
+                }
             }
         }
-        else{
-            strcat(localbuf, buf);
-            len++;
-            if (localbuf[len - 1] == '\0')
-            {
-                break;
-            }
+        STOP = strcmp(localbuf, disclosure) == 0; // SAME -> STOP = TRUE
+        /* for(int i = 0; i < 20; i++){
+            printf("|%c|", localbuf[i]);
         }
-    }
+        printf("\n%s\n", localbuf); */
 
-    printf("%s\n", localbuf);
+        if(STOP == FALSE){
+            strcat(localbufcpy, localbuf);
+            write(fd, localbufcpy, BUF_SIZE);
+        }
+    } while(STOP == FALSE);
 
-    write(fd, localbuf, BUF_SIZE);
+    //printf("%s\n", localbufcpy);
+
+
 
     sleep(1);
 
