@@ -30,6 +30,7 @@ int alarmCount = 0;
 
 unsigned char buf[BUF_SIZE] = {0};
 unsigned char bufcopy[BUF_SIZE] = {0};
+unsigned char disclosure[BUF_SIZE] = "Fecha a loja";
 int fd, len, count;
 int alarmBreak = FALSE;
 
@@ -49,6 +50,7 @@ void alarmHandler(int signal)
 
     if (strcmp(localbuf, bufcopy) != 0 && alarmCount < 3){
         write(fd, bufcopy, BUF_SIZE);
+        printf("dass");
     }
     else if(strcmp(localbuf, bufcopy) != 0 && alarmCount == 3){
         STOP = TRUE;
@@ -180,8 +182,9 @@ int main(int argc, char *argv[])
 
     if(!STOP){
         printf("%s\n", localbuf);
+        write(fd, disclosure, BUF_SIZE);
     } else{
-        printf("Invalid or Null Response");
+        printf("Invalid or Null Response\n");
     }
     // Restore the old port settings
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1)
