@@ -1,3 +1,4 @@
+// CAMPO DE ENDEREÇO - A
 #define FIELD_A_E_INIT 0x03   //campo de endereço  Comandos enviados pelo Emissor e Respostas enviadas pelo Receptor
 #define FIELD_A_R_INIT 0x01   //                   Comandos enviados pelo Receptor e Respostas enviadas pelo Emissor
 
@@ -14,4 +15,12 @@
 #define TYPE_FILE_NAME 0x01
 
 #define BYTE_SIZE 256
+
+
+// CONTROL FIELD - C - TRAMAS DE SUPERVISAO - S - TRAMAS NAO NUMERADAS - U
+#define SET 0x03
+#define DISC 0x0B
+#define UA 0x07
+#define RR 0x05  // nao constantes
+#define REJ 0x01 // nao constantes
 

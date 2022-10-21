@@ -29,6 +29,24 @@ int buildDataPacket(unsigned char *packet, int sequenceNumber, unsigned char *da
     return dataLength + shift; //returns len of buffer
 }
 
+int parseDataPacket(unsigned char *packet, unsigned char *data, int *sequenceNumber)
+{
+    if(packet[0] != CTRL_DATA){
+        return 1;
+    }
+    *sequenceNumber = (int) packet[1];
+
+    int size;
+    int shift = 4;
+
+    util_join_bytes(&size, packet[2], packet[3]);
+
+    for(int i = 0; i < size; i++){
+        data[i] = packet[i + shift];
+    }
+    return 0;
+}
+
 int buildControlPacket(unsigned char controlField, unsigned char *packet, int fileSize, char *fileName)
 {
 
@@ -62,25 +80,6 @@ int buildControlPacket(unsigned char controlField, unsigned char *packet, int fi
         packet[fileNameStart + i] = fileName[i];
     }
     return 5 + byteCount + filenameSize + 1; // returns len of buffer
-}
-
-
-int parseDataPacket(unsigned char *packet, unsigned char *data, int *sequenceNumber)
-{
-    if(packet[0] != CTRL_DATA){
-        return 1;
-    }
-    *sequenceNumber = (int) packet[1];
-
-    int size;
-    int shift = 4;
-
-    util_join_bytes(&size, packet[2], packet[3]);
-
-    for(int i = 0; i < size; i++){
-        data[i] = packet[i + shift];
-    }
-    return 0;
 }
 
 int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
