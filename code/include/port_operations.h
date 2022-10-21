@@ -1,3 +1,6 @@
+#ifndef _PORT_OPERATIONS_H_
+#define _PORT_OPERATIONS_H_
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,4 +25,6 @@ struct termios oldtio;
 struct termios newtio;
 
 int set_up_port(const char *serialPortName);
-int set_up_port(int *fd);
+int close_port(int *fd);
+
+#endif // _PORT_OPERATIONS_H_

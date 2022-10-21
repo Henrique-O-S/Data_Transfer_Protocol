@@ -3,11 +3,11 @@
 #include "application_layer.h"
 #include "link_layer.h"
 
+LinkLayer linklayer;
+
 void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
-    LinkLayer linklayer;
-
     strcpy(linklayer.serialPort, serialPort);
     linklayer.role = role;
     linklayer.baudRate = baudRate;

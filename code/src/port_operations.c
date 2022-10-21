@@ -49,7 +49,7 @@ int set_up_port(const char *serialPortName){
     }
 }
 
-int set_up_port(int *fd){
+int close_port(int *fd){
 
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1){
         perror("tcsetattr");
