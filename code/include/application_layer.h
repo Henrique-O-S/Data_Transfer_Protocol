@@ -27,6 +27,3 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
 // build data packet / control packet
 
 #endif // _APPLICATION_LAYER_H_
-
-
-// llopen() llread() llwrite() llclose()
