@@ -3,3 +3,10 @@
 #define FLAG 0x007E
 #define FLAG_STUF 0x7E5E
 
+
+#define TYPE_FILE_SIZE 0x00
+
+#define TYPE_FILE_NAME 0x01
+
+#define BYTE_SIZE 256
+

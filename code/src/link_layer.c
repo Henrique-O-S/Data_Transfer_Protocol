@@ -5,12 +5,25 @@
 // MISC
 #define _POSIX_SOURCE 1 // POSIX compliant source
 
+
+
+int llopenreceiver(){
+    
+}
+
 ////////////////////////////////////////////////
 // LLOPEN
 ////////////////////////////////////////////////
 int llopen(LinkLayer connectionParameters)
 {
-    // TODO
+    if(connectionParameters.role == LlTx){
+
+    }
+
+
+    if(connectionParameters.role == LlRx){
+        
+    }
 
     return 1;
 }
