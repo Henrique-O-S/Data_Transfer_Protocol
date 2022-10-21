@@ -5,7 +5,7 @@
 // MISC
 #define _POSIX_SOURCE 1 // POSIX compliant source
 
-
+//Tramas I, SET e DISC são designadas Comandos e as restantes (UA, RR e REJ) Respostas
 
 int llopenreceiver(){
     
