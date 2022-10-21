@@ -5,6 +5,8 @@
 #include "aux.h"
 #include "macros.h"
 
+//BUILDERS CALLED BY WRITER AND PARSERS CALLED BY READER
+
 int buildDataPacket(unsigned char *packet, int sequenceNumber, unsigned char *data, int dataLength)
 {
     int shift = 4;
@@ -24,7 +26,7 @@ int buildDataPacket(unsigned char *packet, int sequenceNumber, unsigned char *da
     for (int i = 0; i < dataLength; i++)
         packet[i + shift] = data[i];
 
-    return dataLength + shift;
+    return dataLength + shift; //returns len of buffer
 }
 
 int buildControlPacket(unsigned char controlField, unsigned char *packet, int fileSize, char *fileName)
@@ -34,47 +36,106 @@ int buildControlPacket(unsigned char controlField, unsigned char *packet, int fi
 
     packet[1] = TYPE_FILE_SIZE;
 
+    int remainingFileSize = fileSize;
 
-    int length = 0;
-    int currentFileSize = fileSize;
+    int byteCount;
 
-    // cicle to separate file size (v1) in bytes
-    while (currentFileSize > 0)
-    {
-        int rest = currentFileSize % 256;
-        int div = currentFileSize / 256;
-        length++;
+    get_size_in_bytes(fileSize, &byteCount);
 
-        // shifts all bytes to the right, to make space for the new byte
-        for (unsigned int i = 2 + length; i > 3; i--)
-            packet[i] = packet[i - 1];
+    packet[2] = byteCount;
 
-        packet[3] = (unsigned char)rest;
+    int fileSizeStart = 3;
 
-        currentFileSize = div;
+    for(int i = byteCount - 1; i > 0; i--){
+        packet[fileSizeStart + i] = (unsigned char) (fileSize);
+        fileSize = fileSize >> 8;
     }
 
-    packet[2] = (unsigned char)length;
+    packet[3 + byteCount] = TYPE_FILE_NAME;
 
-    packet[3 + length] = TYPE_FILENAME;
+    int filenameSize = strlen(fileName) + 1;
+    packet[4 + byteCount] = (unsigned char) filenameSize;
 
-    int fileNameStart = 5 + length; // beginning of v2
+    int fileNameStart = 5 + byteCount;
 
-    packet[4 + length] = (unsigned char)(strlen(fileName) + 1); // adds file name length (including '\0)
-
-    for (unsigned int j = 0; j < (strlen(fileName) + 1); j++)
-    { // strlen(fileName) + 1 in order to add the '\0' char
-        packet[fileNameStart + j] = fileName[j];
+    for(int i = 0; i < filenameSize; i++){
+        packet[fileNameStart + i] = fileName[i];
     }
-
-    return 3 + length + 2 + strlen(fileName) + 1; // total length of the packet
+    return 5 + byteCount + filenameSize + 1; // returns len of buffer
 }
 
-LinkLayer linklayer;
+
+int parseDataPacket(unsigned char *packet, unsigned char *data, int *sequenceNumber)
+{
+    if(packet[0] != CTRL_DATA){
+        return 1;
+    }
+    *sequenceNumber = (int) packet[1];
+
+    int size;
+    int shift = 4;
+
+    util_join_bytes(&size, packet[2], packet[3]);
+
+    for(int i = 0; i < size; i++){
+        data[i] = packet[i + shift];
+    }
+    return 0;
+}
+
+int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
+{
+
+    if (packet[0] != CTRL_START && packet[0] != CTRL_END)
+    {
+        return 1;
+    }
+
+    int lengthFileSize, lengthFileName, fileNameStart;
+    *fileSize = 0;
+    
+
+    if (packet[1] == TYPE_FILE_SIZE)
+    {
+        lengthFileSize = (int) packet[2];
+        for (int i = 0; i < lengthFileSize; i++)
+        {
+            *fileSize = *fileSize | (unsigned char) packet[3 + i];
+            if(i != lengthFileSize - 1){
+                *fileSize = *fileSize << 8;
+            }
+        }
+    }
+    else
+    {
+        return 1;
+    }
+
+    fileNameStart = 5 + lengthFileSize;
+
+    if (packet[fileNameStart - 2] == TYPE_FILE_NAME)
+    {
+
+        lengthFileName = (int) packet[4 + lengthFileSize];
+
+        for (int i = 0; i < lengthFileName; i++)
+        {
+            fileName[i] = packet[fileNameStart + i];
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 
 void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
+    LinkLayer linklayer;
     strcpy(linklayer.serialPort, serialPort);
     linklayer.role = role;
     linklayer.baudRate = baudRate;

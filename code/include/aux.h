@@ -1,8 +1,14 @@
 #ifndef _AUX_FUNCTIONS_H_
 #define _AUX_FUNCTIONS_H_
 
-int(util_get_LSB)(int val, unsigned char *lsb);
+#include "macros.h"
 
-int(util_get_MSB)(int val, unsigned char *msb);
+int util_get_LSB (int val, unsigned char *lsb);
 
-#endif // _APPLICATION_LAYER_H_
+int util_get_MSB (int val, unsigned char *msb);
+
+int util_join_bytes (int *ret, unsigned char msb, unsigned char lsb);
+
+int get_size_in_bytes (int fileSize, int *byteCount);
+
+#endif // _AUX_FUNCTIONS_H_
