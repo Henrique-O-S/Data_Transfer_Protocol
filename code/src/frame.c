@@ -1,5 +1,16 @@
 #include "frame.h"
 
+int sendFrame(unsigned char* frame, int fd, int length) {
+
+    int bytesWritten;
+
+    if( (bytesWritten = write(fd, frame, length)) <= 0){
+        return -1;
+    }
+
+    return bytesWritten;
+}
+
 int createIFrame(unsigned char* frame, unsigned char control, unsigned char* data, int dataSize) {
 
   frame[0] = FLAG;
@@ -34,4 +45,26 @@ int createSFrame(unsigned char* frame, unsigned char address, unsigned char cont
   frame[4] = FLAG;
 
   return 0;
+}
+
+int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int controlBytesLength, unsigned char addressByte) {
+
+    state_machine_st *sm = create_state_machine(controlBytes, controlBytesLength, addressByte);
+
+    unsigned char byte;
+
+    while(st->state != STOP && stop != 1 && !relay) {
+        if(readByte(&byte, fd) == 0)
+          event_handler(sm, byte, frame, SUPERVISION);
+    }
+
+    int ret = sm->controlByteIndex;
+
+    destroy_st(st);
+
+    if(stop == 1 || relay)
+      return -1;
+
+    return ret;
+
 }

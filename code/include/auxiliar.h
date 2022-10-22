@@ -22,4 +22,6 @@ int stuffIFrame (unsigned char *frame, int frameSize);
 
 int unstuffIFrame (unsigned char *frame, int frameSize);
 
+int readByte(unsigned char* byte, int fd);
+
 #endif // _AUX_FUNCTIONS_H_

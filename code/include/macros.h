@@ -1,3 +1,6 @@
+#define FALSE 0
+#define TRUE 1
+
 // CAMPO DE ENDEREÇO - A
 #define FIELD_A_T_INIT 0x03   //campo de endereço  Comandos enviados pelo Emissor e Respostas enviadas pelo Receptor
 #define FIELD_A_R_INIT 0x01   //                   Comandos enviados pelo Receptor e Respostas enviadas pelo Emissor

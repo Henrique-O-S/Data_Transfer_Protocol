@@ -24,10 +24,10 @@ typedef enum state {
 
 typedef struct state_machine {
     state_st state;
-    unsigned char* wantedBytes;
-    int wantedBytesLength;
+    unsigned char* controlBytes;
+    int controlBytesLength;
     unsigned char addressByte;
-    int foundIndex;
+    int ControlByteIndex;
     int dataLength;
 } state_machine_st;
 
@@ -38,7 +38,7 @@ typedef struct state_machine {
  * @param sm State machine for which to check
  * @return Index of the array where the byte was found; negative if byte is not a member
  */
-int isWanted(unsigned char byte, state_machine_st* sm);
+int isControlByte(unsigned char byte, state_machine_st* sm);
 
 
 /**
@@ -51,12 +51,12 @@ void change_state(state_machine_st* sm, state_st st);
 
 /**
  * Function to create a state machine, with the given attributes
- * @param wantedBytes Possible bytes that are expected in the frame to be read by the state machine
- * @param wantedBytesLength Number of possible bytes that are expected in the frame to be read by the state machine
+ * @param controlBytes Possible bytes that are expected in the frame to be read by the state machine
+ * @param controlBytesLength Number of possible bytes that are expected in the frame to be read by the state machine
  * @param addressByte Address from which the frame to be read by the state machine is expected
  * @return Pointer to the new state machine "object" (struct)
  */
-state_machine_st* create_state_machine(unsigned char* wantedBytes, int wantedBytesLength, unsigned char addressByte);
+state_machine_st* create_state_machine(unsigned char* controlBytes, int controlBytesLength, unsigned char addressByte);
 
 
 /**

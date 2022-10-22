@@ -4,13 +4,10 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include "../src/application_layer.c"
+#include "application_layer.h"
+#include "macros.h"
 
-#define FALSE 0
-#define TRUE 1
-
-int currentRetransmission;
-int retransmite = FALSE; 
+int currentRetransmission, relay = FALSE, stop = FALSE; 
 
 void alarmHandler(int signal);
 

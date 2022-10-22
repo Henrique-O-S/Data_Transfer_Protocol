@@ -2,7 +2,7 @@
 
 void alarmHandler(int signal){
     if(linklayer.nRetransmissions > currentRetransmission){
-        retransmite = TRUE;
+        relay = TRUE;
         alarm(linklayer.timeout);
         currentRetransmission++;
         printf("Timeout or invalide value: resending...\n");
@@ -10,5 +10,6 @@ void alarmHandler(int signal){
 
     else{
         printf("Timeout or invalide value: number of tries exceeded!\n");
+        stop = TRUE;
     }
 }

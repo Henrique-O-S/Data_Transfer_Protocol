@@ -3,11 +3,15 @@
 
 #include "macros.h"
 #include "auxiliar.h"
+#include "state_machine.h"
+#include "alarm.h"
+
+int sendFrame(unsigned char* frame, int fd, int length);
 
 int createIFrame(unsigned char* frame, unsigned char controlField, unsigned char* dataField, int infoFieldLength);
 
 int createSFrame(unsigned char* frame, unsigned char address, unsigned char control);
 
-
+int readSupervisionFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int controlBytesLength, unsigned char address);
 
 #endif // _FRAME_H_

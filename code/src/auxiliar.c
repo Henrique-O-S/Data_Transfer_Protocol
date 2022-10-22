@@ -95,3 +95,12 @@ int stuffIFrame (unsigned char *frame, int frameSize){
 int unstuffIFrame (unsigned char *frame, int frameSize){
   
 }
+
+int readByte(unsigned char* byte, int fd) {
+
+    if(read(fd, byte, sizeof(unsigned char)) <= 0)
+        return -1;
+
+    return 0;
+}
+

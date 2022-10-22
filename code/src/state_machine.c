@@ -2,14 +2,14 @@
 
 
 /**
- * Function to check if a byte is contained in the state machine's wantedBytes field
+ * Function to check if a byte is contained in the state machine's controlBytes field
  * @param byte Byte to be checked
  * @param sm State machine for which to check
  * @return Index of the array where the byte was found; negative if byte is not a member
  */
-int isWanted(unsigned char byte, state_machine_st* sm) {
-  for (int i = 0; i < sm->wantedBytesLength; i++) {
-    if (sm->wantedBytes[i] == byte)
+int isControlByte(unsigned char byte, state_machine_st* sm) {
+  for (int i = 0; i < sm->controlBytesLength; i++) {
+    if (sm->controlBytes[i] == byte)
       return i;
   }
 
@@ -29,16 +29,16 @@ void change_state(state_machine_st* sm, state_st st) {
 
 /**
  * Function to create a state machine, with the given attributes
- * @param wantedBytes Possible bytes that are expected in the frame to be read by the state machine
- * @param wantedBytesLength Number of possible bytes that are expected in the frame to be read by the state machine
+ * @param controlBytes Possible bytes that are expected in the frame to be read by the state machine
+ * @param controlBytesLength Number of possible bytes that are expected in the frame to be read by the state machine
  * @param addressByte Address from which the frame to be read by the state machine is expected
  * @return Pointer to the new state machine "object" (struct)
  */
-state_machine_st* create_state_machine(unsigned char* wantedBytes, int wantedBytesLength, unsigned char addressByte) {
+state_machine_st* create_state_machine(unsigned char* controlBytes, int controlBytesLength, unsigned char addressByte) {
     state_machine_st* sm = malloc(sizeof(state_machine_st));
     change_state(sm, START);
-    sm->wantedBytes = wantedBytes;
-    sm->wantedBytesLength = wantedBytesLength;
+    sm->controlBytes = controlBytes;
+    sm->controlBytesLength = controlBytesLength;
     sm->addressByte = addressByte;
     sm->dataLength = 0;
     return sm;
@@ -82,9 +82,9 @@ void event_handler(state_machine_st* sm, unsigned char byte, unsigned char* fram
               change_state(sm, FLAG_RCV);
           else {
               int n;
-              if ((n = isWanted(byte, sm))>=0){
+              if ((n = isControlByte(byte, sm))>=0){
                 change_state(sm, C_RCV);
-                sm->foundIndex = n;
+                sm->controlByteIndex = n;
                 frame[2] = byte;
               }
               else
@@ -166,13 +166,13 @@ void event_handler(state_machine_st* sm, unsigned char byte, unsigned char* fram
                 change_state(sm, BCC_OK);
                 frame[i++] = byte;
             }
-            else {
-              if (byte == FLAG)
+            else if (byte == FLAG){
                 change_state(sm, FLAG_RCV);
-              else
+                i = (int) FLAG_RCV;
+            }
+            else{
                 change_state(sm, START);
-
-              i = (int) sm->state;
+                i = (int) START;
             }
             break;
 
