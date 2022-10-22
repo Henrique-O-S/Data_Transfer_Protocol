@@ -63,3 +63,35 @@ int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned c
   }
   return 0;
 }
+
+int stuffIFrame (unsigned char *frame, int frameSize){
+  unsigned char cpy[frameSize];
+  int flagByteNo = frameSize - 1;
+  int shift = 0;
+
+  for(int i = 0; i < frameSize; i++){
+    cpy[i] = frame[i];
+  }
+
+  for(int i = 4; i < frameSize + shift; i++){  // only stuff data field of I FRAME
+    if(cpy[i] == FLAG && i != flagByteNo){
+      frame[i] = FLAG_STUF1;
+      frame[i+1] = FLAG_STUF2;
+      shift++;
+    }
+    else if(cpy[i] == ESC_BYTE){
+      frame[i] = ESC_BYTE_STUF1;
+      frame[i+1] = ESC_BYTE_STUF2;
+      shift++;
+    }
+    else{
+      frame[i + shift] = cpy[i];
+    }
+  }
+  return frameSize + shift;
+
+}
+
+int unstuffIFrame (unsigned char *frame, int frameSize){
+  
+}

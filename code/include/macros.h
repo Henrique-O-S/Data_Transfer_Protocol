@@ -5,9 +5,11 @@
 
 
 #define FLAG 0x7E
-#define FLAG_STUF 0x7D5E
+#define FLAG_STUF1 0x7D
+#define FLAG_STUF2 0x5E
 #define ESC_BYTE 0x7D
-#define ESC_BYTE_STUF 0x7D5D
+#define ESC_BYTE_STUF1 0x7D
+#define ESC_BYTE_STUF2 0x5D
 
 
 #define TYPE_FILE_SIZE 0x00
