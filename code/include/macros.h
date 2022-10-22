@@ -16,6 +16,17 @@
 
 #define BYTE_SIZE 256
 
+#define MAX_DATA_SIZE   1024 // max size of a data packet
+#define MAX_PACK_SIZE   (MAX_DATA_SIZE + 4) // max size of a data packet + 4 bytes for packet head
+#define MAX_SIZE        (MAX_PACK_SIZE + 6) // max size of data in a frame, + 4 bytes for packet head, + 6 bytes for frame header and tail
+#define MAX_SIZE_FRAME  (((MAX_PACK_SIZE + 1) * 2) + 5) // max size of a frame, with byte stuffing considered ((1029 * 2) + 5)
+                             // 1029 -> all bytes that can suffer byte stuffing (and therefore be "duplicated"), that is, the packet and the BCC2
+                             // 5 -> the bytes that won't suffer byte stuffing (flags, bcc1, address and control bytes)
+
+#define BUF_SIZE_SF    5 // size of a supervision frame
+
+#define SUPERVISION 0
+#define INFORMATION 1
 
 // CONTROL FIELD - C - TRAMAS DE SUPERVISAO - S - TRAMAS NAO NUMERADAS - U
 #define SET 0x03

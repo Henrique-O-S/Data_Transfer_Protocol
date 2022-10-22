@@ -9,14 +9,14 @@ int set_up_port(const char *serialPortName){
     if (fd < 0)
     {
         perror(serialPortName);
-        exit(-1);
+        return(-1);
     }
 
     // Save current port settings
     if (tcgetattr(fd, &oldtio) == -1)
     {
         perror("tcgetattr");
-        exit(-1);
+        return(-1);
     }
 
     // Clear struct for new port settings
@@ -45,16 +45,22 @@ int set_up_port(const char *serialPortName){
     if (tcsetattr(fd, TCSANOW, &newtio) == -1)
     {
         perror("tcsetattr");
-        exit(-1);
+        return(-1);
     }
+
+    return fd;
 }
 
 int close_port(int *fd){
 
+    sleep(1);
+
     if (tcsetattr(fd, TCSANOW, &oldtio) == -1){
         perror("tcsetattr");
-        exit(-1);
+        return(-1);
     }
 
     close(fd);
+
+    return 0;
 }
