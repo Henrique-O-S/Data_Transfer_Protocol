@@ -18,4 +18,8 @@ unsigned char dataBCC (unsigned char *data, int dataSize);
 
 int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
 
-#endif // _AUXILIAR_FUNCTIONS_H_
+int stuffIFrame (unsigned char *frame, int frameSize);
+
+int unstuffIFrame (unsigned char *frame, int frameSize);
+
+#endif // _AUX_FUNCTIONS_H_
