@@ -1,5 +1,5 @@
-#ifndef _AUX_FUNCTIONS_H_
-#define _AUX_FUNCTIONS_H_
+#ifndef _AUXILIAR_FUNCTIONS_H_
+#define _AUXILIAR_FUNCTIONS_H_
 
 #include "macros.h"
 #include "link_layer.h"
@@ -18,4 +18,4 @@ unsigned char dataBCC (unsigned char *data, int dataSize);
 
 int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
 
-#endif // _AUX_FUNCTIONS_H_
+#endif // _AUXILIAR_FUNCTIONS_H_

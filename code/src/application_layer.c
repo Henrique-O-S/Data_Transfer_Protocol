@@ -2,7 +2,7 @@
 
 #include "application_layer.h"
 #include "link_layer.h"
-#include "aux.h"
+#include "auxiliar.h"
 #include "macros.h"
 
 //BUILDERS CALLED BY WRITER AND PARSERS CALLED BY READER

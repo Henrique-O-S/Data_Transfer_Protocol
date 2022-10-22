@@ -2,7 +2,7 @@
 #define _FRAME_H_
 
 #include "macros.h"
-#include "aux.h"
+#include "auxiliar.h"
 
 int createIFrame(unsigned char* frame, unsigned char controlField, unsigned char* dataField, int infoFieldLength);
 

@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "auxiliar.h"
 
 
 int util_get_LSB (int val, unsigned char *lsb) {
