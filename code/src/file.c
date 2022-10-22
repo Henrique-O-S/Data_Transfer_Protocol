@@ -14,7 +14,7 @@ int closeFile(FILE *file){
 }
 
 int getFileSize(FILE *file){
-    fseek(file, 0, SEEK_END);
+    fseek(file, 0L, SEEK_END);
     int fileSize = (int)ftell(file);
     rewind(file);
     return fileSize;

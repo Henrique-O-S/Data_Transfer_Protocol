@@ -47,10 +47,10 @@ int parseDataPacket(unsigned char *packet, unsigned char *data, int *sequenceNum
     return 0;
 }
 
-int buildControlPacket(unsigned char controlField, unsigned char *packet, int fileSize, char *fileName)
+int buildControlPacket(unsigned char control, unsigned char *packet, int fileSize, char *fileName)
 {
 
-    packet[0] = controlField;
+    packet[0] = control;
 
     packet[1] = TYPE_FILE_SIZE;
 

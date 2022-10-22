@@ -1,5 +1,5 @@
 // CAMPO DE ENDEREÇO - A
-#define FIELD_A_E_INIT 0x03   //campo de endereço  Comandos enviados pelo Emissor e Respostas enviadas pelo Receptor
+#define FIELD_A_T_INIT 0x03   //campo de endereço  Comandos enviados pelo Emissor e Respostas enviadas pelo Receptor
 #define FIELD_A_R_INIT 0x01   //                   Comandos enviados pelo Receptor e Respostas enviadas pelo Emissor
 
 
@@ -21,6 +21,10 @@
 #define SET 0x03
 #define DISC 0x0B
 #define UA 0x07
-#define RR 0x05  // nao constantes
-#define REJ 0x01 // nao constantes
+#define RR0 0x05
+#define RR1 0x85
+#define REJ0 0x01
+#define REJ1 0x81
+#define NS0 0x00
+#define NS1 0x40
 
