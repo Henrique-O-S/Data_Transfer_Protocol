@@ -5,6 +5,8 @@
 #include "auxiliar.h"
 #include "macros.h"
 
+LinkLayer linklayer;
+
 //BUILDERS CALLED BY WRITER AND PARSERS CALLED BY READER
 
 int buildDataPacket(unsigned char *packet, int sequenceNumber, unsigned char *data, int dataLength)
@@ -134,7 +136,6 @@ int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
 void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
-    LinkLayer linklayer;
     strcpy(linklayer.serialPort, serialPort);
     linklayer.role = role;
     linklayer.baudRate = baudRate;

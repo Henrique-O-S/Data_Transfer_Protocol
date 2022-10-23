@@ -104,3 +104,19 @@ int readByte(unsigned char* byte, int fd) {
     return 0;
 }
 
+void alarmHandlerInstaller() {
+    struct sigaction action;
+    action.sa_handler = alarmHandler;
+
+    if(sigemptyset(&action.sa_mask) == -1){
+      perror("sigemptyset");
+      exit(-1);
+    }
+
+    action.sa_flags = 0;
+
+    if(sigaction(SIGALRM, &action, NULL) != 0){
+      perror("sigaction");
+      exit(-1);
+    }
+}
