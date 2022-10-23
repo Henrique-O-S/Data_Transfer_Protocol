@@ -12,7 +12,6 @@ int util_get_MSB (int val, unsigned char *msb) {
 }
 
 int util_join_bytes (int *ret, unsigned char msb, unsigned char lsb) {
-  /* ret = (msb << 8) | lsb; */
   *ret = msb;
   *ret = *ret << 8;
   *ret = *ret | lsb;
@@ -88,12 +87,35 @@ int stuffIFrame (unsigned char *frame, int frameSize){
       frame[i + shift] = cpy[i];
     }
   }
-  return frameSize + shift;
+  return frameSize + shift; // return new len
 
 }
 
 int unstuffIFrame (unsigned char *frame, int frameSize){
-  
+  unsigned char cpy[frameSize];
+  int flagByteNo = frameSize - 2;
+  int shift = 0;
+
+  for(int i = 0; i < frameSize; i++){
+    cpy[i] = frame[i];
+  }
+
+  for(int i = 4; i < frameSize + shift; i++){  // only stuff data field of I FRAME
+    if(cpy[i] == FLAG_STUF1 && cpy[i+1] == FLAG_STUF2 && i != flagByteNo){
+      frame[i] = FLAG;
+      shift--;
+      i++;
+    }
+    else if(cpy[i] == ESC_BYTE_STUF1 && cpy[i+1] == ESC_BYTE_STUF2){
+      frame[i] = ESC_BYTE;
+      shift--;
+      i++;
+    }
+    else{
+      frame[i + shift] = cpy[i];
+    }
+  }
+  return frameSize + shift;   // return new len
 }
 
 int readByte(unsigned char* byte, int fd) {
