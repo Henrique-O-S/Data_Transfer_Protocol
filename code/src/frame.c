@@ -60,10 +60,29 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     int ret = sm->controlByteIndex;
 
-    destroy_st(st);
+    destroy_st(sm);
 
     if(stop == 1 || relay)
       return -1;
+
+    return ret;
+
+}
+
+int readIFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int controlBytesLength, unsigned char addressByte) {
+
+    state_machine_st *sm = create_state_machine(controlBytes, controlBytesLength, addressByte);
+
+    unsigned char byte;
+
+    while(st->state != STOP) {
+        if(readByte(&byte, fd) == 0)
+          event_handler(sm, byte, frame, INFORMATION);
+    }
+
+    int ret = sm->dataLength;
+
+    destroy_st(sm);
 
     return ret;
 

@@ -3,6 +3,8 @@
 #include "unistd.h"
 
 #include "link_layer.h"
+#include "auxiliar.h"
+#include "frame.h"
 #include "port_operations.h"
 #include "macros.h"
 #include "alarm.h"
@@ -213,9 +215,103 @@ int llwrite(const unsigned char *buf, int bufSize)
 ////////////////////////////////////////////////
 int llread(unsigned char *packet)
 {
-    // TODO
+    unsigned char controlBytes[2];
+    controlBytes[0] = NS0;
+    controlBytes[1] = NS1;
+    int packetSize, bytesRead, bufferFull = FALSE;
+    
+    while(!bufferFull){
 
-    return 0;
+        if((bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT)) < 0){
+            printf("Troubles reading information. Closing\n");
+            close_port(fd);
+            return -1
+        }
+
+        if((packetSize = unstuffIFrame(frame, bytesRead)) < 0){
+            printf("Troubles unstuffing. Closing\n");
+            close_port(fd);
+            return -1
+        }
+
+        int controlByte;
+        if(frame[2] == NS0){
+            controlByte = 0;
+        }
+        else{
+            controlByte = 1;
+        }
+        int responseByte;
+
+        if (frame[packetSize - 2] == dataBCC(&frame[4], packetSize - 6)){
+            if(controlByte != seqNumber){
+                if(controlByte == 0){
+                    seqNumber = 1;
+                    responseByte = RR1;
+                }
+                else{
+                    seqNumber = 0;
+                    responseByte == RR0;
+                }
+            }
+            else{
+                for (int i = 0; i < packetSize - 6; i++){
+                    packet[i] = frame[4 + i];
+                }
+
+                bufferFull = TRUE;
+
+                if(controlByte == 0){
+                    seqNumber = 1;
+                    responseByte = RR1;
+                }
+                else{
+                    seqNumber = 0;
+                    responseByte == RR0;
+                }
+            }
+        }
+        else{
+            if(controlByte != seqNumber){
+                if(controlByte == 0){
+                    seqNumber = 1;
+                    responseByte = RR1;
+                }
+                else{
+                    seqNumber = 0;
+                    responseByte == RR0;
+                }
+            }
+            else{
+                if(controlByte == 0){
+                    seqNumber = 0;
+                    responseByte = REJ0;
+                }
+                else{
+                    seqNumber = 1;
+                    responseByte == REJ1;
+                }
+            }
+        }
+
+        if((createSFrame(frame, FIELD_A_T_INIT, responseByte)) != 0){
+            printf("Troubles sending response. Closing\n");
+            close_port(fd);
+            return -1
+        }
+
+        frameLength = BUF_SIZE_SF;
+
+        if(sendFrame(frame, fd, frameLength) < 0){
+            printf("Troubles sending response. Closing\n");
+            close_port(fd);
+            return -1
+        }
+
+        printf("Response sent\n");
+    }
+
+    return packetSize - 6;
 }
 
 ////////////////////////////////////////////////

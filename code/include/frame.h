@@ -14,4 +14,6 @@ int createSFrame(unsigned char* frame, unsigned char address, unsigned char cont
 
 int readSupervisionFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int controlBytesLength, unsigned char address);
 
+int readSupervisionFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int controlBytesLength, unsigned char address);
+
 #endif // _FRAME_H_
