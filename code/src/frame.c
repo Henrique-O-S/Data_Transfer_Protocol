@@ -3,7 +3,6 @@
 int sendFrame(unsigned char* frame, int fd, int length) {
 
     int bytesWritten;
-
     if( (bytesWritten = write(fd, frame, length)) <= 0){
         return -1;
     }
