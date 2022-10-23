@@ -381,6 +381,15 @@ int llclose(int showStatistics)
         }
 
         printf("UA sent\n");
+
+        if(showStatistics == TRUE){
+            printf("Show statistics");
+            /*
+            -
+            -
+            -
+            */
+        }
     }
     else if(linklayer.role == LlRx){
 
@@ -434,6 +443,15 @@ int llclose(int showStatistics)
         }
 
         printf("UA received\n");
+
+        if(showStatistics == TRUE){
+            printf("Show statistics");
+            /*
+            -
+            -
+            -
+            */
+        }
     }
     else{
         perror("Invalid role");
