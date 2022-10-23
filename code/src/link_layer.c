@@ -27,9 +27,10 @@ sequence_number_st seqNumber = 0;
 int llopen(LinkLayer connectionParameters)
 {
 
-    if((fd = set_up_port(connectionParameters.serialPort)) == -1)
-        return -1
-
+    if((fd = set_up_port(connectionParameters.serialPort)) == -1){
+        printf("Couldn't open port communication");
+        return -1;
+    }
     // install alarm handler here
 
     frameLength = BUF_SIZE_SF;
@@ -51,26 +52,28 @@ int llopen(LinkLayer connectionParameters)
         printf("SET sent\n");
 
         int stop = FALSE;
-        int bytes = -1
+        int bytesRead = -1;
+        currentRetransmission = 0;
         relay = FALSE;
 
+        alarm(linklayer.timeout);
 
         while(!stop){
-            bytes = readSFrame(frame, fd, UA, 1, 0x03)
+            bytesRead = readSFrame(frame, fd, UA, 1, FIELD_A_T_INIT);
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
                 relay = FALSE;
             }
 
-            if(bytes >= 0){
+            if(bytesRead >= 0){
                 alarm(0);
                 stop = TRUE;
             }
         }
 
-        if(bytes == -1){
-            printf("Couldn't read UA. Closing\n")
+        if(bytesRead == -1){
+            printf("Couldn't read UA. Closing file\n")
             close_port(fd);
             return -1;
         }
@@ -186,7 +189,7 @@ int llwrite(const unsigned char *buf, int bufSize)
         }
 
         if (bytesRead < 0){
-            printf("Troubles reading. Closing\n");
+            printf("Troubles reading. Closing file\n");
             close_port(fd);
             return -1
         }
@@ -223,13 +226,13 @@ int llread(unsigned char *packet)
     while(!bufferFull){
 
         if((bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT)) < 0){
-            printf("Troubles reading information. Closing\n");
+            printf("Troubles reading information. Closing file\n");
             close_port(fd);
             return -1
         }
 
         if((packetSize = unstuffIFrame(frame, bytesRead)) < 0){
-            printf("Troubles unstuffing. Closing\n");
+            printf("Troubles unstuffing. Closing file\n");
             close_port(fd);
             return -1
         }
@@ -295,7 +298,7 @@ int llread(unsigned char *packet)
         }
 
         if((createSFrame(frame, FIELD_A_T_INIT, responseByte)) != 0){
-            printf("Troubles sending response. Closing\n");
+            printf("Troubles sending response. Closing file\n");
             close_port(fd);
             return -1
         }
@@ -303,7 +306,7 @@ int llread(unsigned char *packet)
         frameLength = BUF_SIZE_SF;
 
         if(sendFrame(frame, fd, frameLength) < 0){
-            printf("Troubles sending response. Closing\n");
+            printf("Troubles sending response. Closing file\n");
             close_port(fd);
             return -1
         }
@@ -319,7 +322,132 @@ int llread(unsigned char *packet)
 ////////////////////////////////////////////////
 int llclose(int showStatistics)
 {
-    // TODO
+    if(linklayer.role == LlTx){
+
+        if((createSFrame(frame, FIELD_A_T_INIT, DISC)) != 0){
+            printf("Troubles sending command. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        frameLength = BUF_SIZE_SF;
+        if(sendFrame(frame, fd, frameLength) < 0){
+            printf("Troubles sending command. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        printf("DISC sent\n");
+
+        int stop = FALSE;
+        int bytesRead = -1;
+        currentRetransmission = 0;
+        relay = FALSE;
+
+        alarm(linklayer.timeout);
+
+        while(!stop){
+            bytesRead = readSFrame(frame, fd, DISC, 1, FIELD_A_R_INIT);
+
+            if(relay){
+                sendFrame(frame, fd, frameLength);
+                relay = FALSE;
+            }
+
+            if(bytesRead >= 0){
+                alarm(0);
+                stop = TRUE;
+            }
+        }
+
+        if(bytesRead < 0){
+            printf("Troubles reading command. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        printf("DISC received\n");
+
+        if((createSFrame(frame, FIELD_A_R_INIT, UA)) != 0){
+            printf("Troubles sending response. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        if(sendFrame(frame, fd, frameLength) < 0){
+            printf("Troubles sending response. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        printf("UA sent\n");
+    }
+    else if(linklayer.role == LlRx){
+
+        if (readSFrame(frame, fd, DISC, 1, FIELD_A_T_INIT) != 0){
+             printf("Troubles receiving command. Closing file\n");
+            close_port(fd);
+            return -1;
+        }
+
+        printf("DISC received\n");
+
+        if(createSFrame(frame, DISC, FIELD_A_R_INIT) != 0){
+             printf("Troubles sending command. Closing file\n");
+            close_port(fd);
+            return -1;
+        }
+
+        if(sendFrame(frame, fd, frameLength) < 0){
+             printf("Troubles sending command. Closing file\n");
+            close_port(fd);
+            return -1;
+        }
+        printf("DISC sent\n");
+
+        int stop = FALSE;
+        int bytesRead = -1;
+        currentRetransmission = 0;
+        relay = FALSE;
+        frameLength = BUF_SIZE_SF;
+
+        alarm(linklayer.timeout);
+
+        while(!stop){
+            bytesRead = readSFrame(frame, fd, UA, 1, FIELD_A_R_INIT);
+
+            if(relay){
+                sendFrame(frame, fd, frameLength);
+                relay = FALSE;
+            }
+
+            if(bytesRead >= 0){
+                alarm(0);
+                stop = TRUE;
+            }
+        }
+
+        if(bytesRead < 0){
+            printf("Troubles reading response. Closing file\n");
+            close_port(fd);
+            return -1
+        }
+
+        printf("UA received\n");
+    }
+    else{
+        perror("Invalid role");
+        close_port(fd);
+        return -1;
+    }
+
+    if(close_port(fd) < 0){
+        return -1;
+    }
+
+    if(close(fd) < 0){
+        return -1;
+    }
 
     return 1;
 }
