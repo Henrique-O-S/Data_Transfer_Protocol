@@ -1,6 +1,6 @@
 #include "file.h"
 
-FILE* openFile(char *name, char* mode){
+FILE* openFile(const char *name, char* mode){
     FILE *ret;
     ret = fopen(name, mode);
     if(ret == NULL){

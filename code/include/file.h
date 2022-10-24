@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "macros.h"
 
-FILE* openFile(char *name, char* mode);
+FILE* openFile(const char *name, char* mode);
 
 int closeFile(FILE *file);
 

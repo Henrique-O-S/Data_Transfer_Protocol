@@ -138,18 +138,21 @@ int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
     return 0;
 }
 
-int sendFile(char *filename, char *serialPort)
+int sendFile(const char *filename, char *serialPort)
 {
+    printf("passou\n");
     FILE *file = openFile(filename, "r");
     if (file == NULL)
     {
         printf("ERROR OPENING FILE!\n");
         return 1;
     }
+    printf("abriu\n");
     if (llopen(linklayer))
     {
         return 1;
     }
+    printf("open\n");
 
     int fileSize = getFileSize(file);
     unsigned char cSPacket[MAX_PACK_SIZE];
@@ -224,10 +227,9 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    if(parseControlPacket(cSPacket, &fileSize, packetFilename && cSPacket[0] != CTRL_START)){
+    if(parseControlPacket(cSPacket, &fileSize, packetFilename) && cSPacket[0] != CTRL_START){
         return -1;
     }
-
     FILE *file = openFile(filename, "w");
     if(file == NULL){
         return 1;
@@ -266,18 +268,18 @@ int receiveFile(char *filename, char *serialPort){
 
     int newFileSize;
     unsigned char newFileName[255];
-    if(parseControlPacket(cEPacket, &newFileSize, newFileName) < 0)
+    if(parseControlPacket(cEPacket, &newFileSize, newFileName))
     {
-        return -1;
+        return 1;
     }
 
     if(strcmp(filename, newFileName) || fileSize != newFileSize){
         printf("Files aren't the same");
-        return -1;
+        return 1;
     }
 
     if(llclose(0)){
-        return -1;
+        return 1;
     }
     return 0;
 }
