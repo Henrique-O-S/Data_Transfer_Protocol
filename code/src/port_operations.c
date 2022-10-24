@@ -1,5 +1,8 @@
 #include "port_operations.h"
 
+struct termios oldtio;
+struct termios newtio;
+
 int set_up_port(char *serialPortName){
 
     // Open serial port device for reading and writing, and not as controlling tty

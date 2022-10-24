@@ -21,8 +21,6 @@
 #define FALSE 0
 #define TRUE 1
 
-struct termios oldtio;
-struct termios newtio;
 
 int set_up_port(char *serialPortName);
 int close_port(int fd);
