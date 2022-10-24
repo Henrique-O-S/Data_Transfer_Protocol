@@ -288,10 +288,13 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
     strcpy(linklayer.serialPort, serialPort);
-    if(role == 0)
+    if(role == "tx")
         linklayer.role = LlTx;
-    else
+    else if(role == "rx")
         linklayer.role = LlRx;
+    else{
+        perror("Role not defined");
+    }
     linklayer.baudRate = baudRate;
     linklayer.nRetransmissions = nTries;
     linklayer.timeout = timeout;
