@@ -2,7 +2,6 @@
 
 #include "unistd.h"
 
-#include "link_layer.h"
 #include "auxiliar.h"
 #include "frame.h"
 #include "port_operations.h"

@@ -138,32 +138,6 @@ int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
     return 0;
 }
 
-void applicationLayer(const char *serialPort, const char *role, int baudRate,
-                      int nTries, int timeout, const char *filename)
-{
-    strcpy(linklayer.serialPort, serialPort);
-    if(role == 0)
-        linklayer.role = LlTx;
-    else
-        linklayer.role = LlRx;
-    linklayer.baudRate = baudRate;
-    linklayer.nRetransmissions = nTries;
-    linklayer.timeout = timeout;
-
-    if (linklayer.role == LlTx)
-    {
-        if(sendFile(filename, serialPort)){
-            return 1;
-        }
-    }
-    else
-    {
-        if(receiveFile(filename, serialPort)){
-            return 1;
-        }
-    }
-}
-
 int sendFile(char *filename, char *serialPort)
 {
     FILE *file = openFile(filename, "r");
@@ -306,4 +280,26 @@ int receiveFile(char *filename, char *serialPort){
         return -1;
     }
     return 0;
+}
+
+void applicationLayer(const char *serialPort, const char *role, int baudRate,
+                      int nTries, int timeout, const char *filename)
+{
+    strcpy(linklayer.serialPort, serialPort);
+    if(role == 0)
+        linklayer.role = LlTx;
+    else
+        linklayer.role = LlRx;
+    linklayer.baudRate = baudRate;
+    linklayer.nRetransmissions = nTries;
+    linklayer.timeout = timeout;
+
+    if (linklayer.role == LlTx)
+    {
+        sendFile(filename, serialPort);
+    }
+    else
+    {
+        receiveFile(filename, serialPort);
+    }
 }
