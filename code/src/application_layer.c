@@ -303,7 +303,7 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     {
         sendFile(filename, serialPort);
     }
-    else
+    else if(linklayer.role == LlRx)
     {
         receiveFile(filename, serialPort);
     }
