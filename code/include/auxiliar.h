@@ -1,5 +1,5 @@
-#ifndef _AUXILIAR_FUNCTIONS_H_
-#define _AUXILIAR_FUNCTIONS_H_
+#ifndef _AUXILIAR_H_
+#define _AUXILIAR_H_
 
 #include <stdlib.h>
 #include <signal.h>
@@ -30,4 +30,4 @@ void alarmHandlerInstaller();
 
 int getSequenceNumber (int number);
 
-#endif // _AUX_FUNCTIONS_H_
+#endif // _AUXILIAR_H_

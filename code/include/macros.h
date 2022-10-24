@@ -1,3 +1,7 @@
+#ifndef _MACROS_H_
+#define __MACROS_H_
+
+
 // MISC
 #define FALSE 0
 #define TRUE 1
@@ -48,4 +52,7 @@
 #define DATA_TRANSFER 0x01
 #define START_TRANSFER 0x02
 #define END_TRANSFER 0x03
+
+#endif // _MACROS_H_
+
 
