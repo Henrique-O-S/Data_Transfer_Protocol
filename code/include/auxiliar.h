@@ -30,4 +30,6 @@ int readByte(unsigned char* byte, int fd);
 
 void alarmHandlerInstaller();
 
+int getSequenceNumber (int number);
+
 #endif // _AUX_FUNCTIONS_H_

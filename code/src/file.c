@@ -19,3 +19,10 @@ int getFileSize(FILE *file){
     rewind(file);
     return fileSize;
 }
+
+int readBytesFromFile(FILE *file, unsigned char* dest){
+    return fread(dest, sizeof(unsigned char), MAX_DATA_SIZE, file);
+}
+int writeBytesToFile(FILE *file, unsigned char* source, int len){
+    return fwrite(source, sizeof(unsigned char), len, file);
+}

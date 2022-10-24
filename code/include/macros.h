@@ -45,3 +45,7 @@
 #define NS0 0x00
 #define NS1 0x40
 
+#define DATA_TRANSFER 0x01
+#define START_TRANSFER 0x02
+#define END_TRANSFER 0x03
+
