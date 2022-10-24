@@ -150,7 +150,7 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     linklayer.nRetransmissions = nTries;
     linklayer.timeout = timeout;
 
-    if (role == LlTx)
+    if (linklayer.role == LlTx)
     {
         if(sendFile(filename, serialPort)){
             return 1;

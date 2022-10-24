@@ -9,7 +9,7 @@
 #include "macros.h"
 
 int currentRetransmission, relay = FALSE, stop = FALSE;
-extern nRetransmissions, timeout;
+extern int nRetransmissions, timeout;
 
 void alarmHandler(int signal);
 

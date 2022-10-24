@@ -57,7 +57,7 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
           event_handler(sm, byte, frame, SUPERVISION);
     }
 
-    int ret = sm->ControlByteIndex;
+    int ret = sm->controlByteIndex;
 
     destroy_st(sm);
 
