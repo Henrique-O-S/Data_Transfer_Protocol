@@ -142,3 +142,7 @@ void alarmHandlerInstaller() {
       exit(-1);
     }
 }
+
+int getSequenceNumber (int number){
+  return number % 256;
+}

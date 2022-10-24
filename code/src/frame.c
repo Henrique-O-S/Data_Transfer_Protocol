@@ -52,12 +52,12 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     unsigned char byte;
 
-    while(st->state != STOP && stop != 1 && !relay) {
+    while(sm->state != STOP && stop != 1 && !relay) {
         if(readByte(&byte, fd) == 0)
           event_handler(sm, byte, frame, SUPERVISION);
     }
 
-    int ret = sm->controlByteIndex;
+    int ret = sm->ControlByteIndex;
 
     destroy_st(sm);
 
@@ -74,7 +74,7 @@ int readIFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     unsigned char byte;
 
-    while(st->state != STOP) {
+    while(sm->state != STOP) {
         if(readByte(&byte, fd) == 0)
           event_handler(sm, byte, frame, INFORMATION);
     }

@@ -177,7 +177,7 @@ int llwrite(const unsigned char *buf, int bufSize)
             if(relay){
                 if(sendFrame(frame, fd, frameLength) < 0){
                     close_port(fd);
-                    return -1
+                    return -1;
                 }
                 relay = false;
             }
@@ -191,7 +191,7 @@ int llwrite(const unsigned char *buf, int bufSize)
         if (bytesRead < 0){
             printf("Troubles reading. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
         else if(bytesRead == 0){
             finished = TRUE;
@@ -228,13 +228,13 @@ int llread(unsigned char *packet)
         if((bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT)) < 0){
             printf("Troubles reading information. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         if((packetSize = unstuffIFrame(frame, bytesRead)) < 0){
             printf("Troubles unstuffing. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         int controlByte;
@@ -300,7 +300,7 @@ int llread(unsigned char *packet)
         if((createSFrame(frame, FIELD_A_T_INIT, responseByte)) != 0){
             printf("Troubles sending response. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         frameLength = BUF_SIZE_SF;
@@ -308,7 +308,7 @@ int llread(unsigned char *packet)
         if(sendFrame(frame, fd, frameLength) < 0){
             printf("Troubles sending response. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         printf("Response sent\n");
@@ -327,14 +327,14 @@ int llclose(int showStatistics)
         if((createSFrame(frame, FIELD_A_T_INIT, DISC)) != 0){
             printf("Troubles sending command. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         frameLength = BUF_SIZE_SF;
         if(sendFrame(frame, fd, frameLength) < 0){
             printf("Troubles sending command. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         printf("DISC sent\n");
@@ -363,7 +363,7 @@ int llclose(int showStatistics)
         if(bytesRead < 0){
             printf("Troubles reading command. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         printf("DISC received\n");
@@ -371,13 +371,13 @@ int llclose(int showStatistics)
         if((createSFrame(frame, FIELD_A_R_INIT, UA)) != 0){
             printf("Troubles sending response. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         if(sendFrame(frame, fd, frameLength) < 0){
             printf("Troubles sending response. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         printf("UA sent\n");
@@ -439,7 +439,7 @@ int llclose(int showStatistics)
         if(bytesRead < 0){
             printf("Troubles reading response. Closing file\n");
             close_port(fd);
-            return -1
+            return -1;
         }
 
         printf("UA received\n");
