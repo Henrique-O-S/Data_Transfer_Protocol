@@ -285,7 +285,6 @@ int receiveFile(char *filename, char *serialPort){
 void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
-    printf("Application openned");
     strcpy(linklayer.serialPort, serialPort);
     if(role == 0)
         linklayer.role = LlTx;
