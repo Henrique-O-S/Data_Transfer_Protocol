@@ -1,5 +1,8 @@
 #include "alarm.h"
 
+int currentRetransmission, relay = FALSE, stop = FALSE;
+extern int nRetransmissions, timeout;
+
 void alarmHandler(int signal){
     if(nRetransmissions > currentRetransmission){
         relay = TRUE;

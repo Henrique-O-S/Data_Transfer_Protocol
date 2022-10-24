@@ -38,6 +38,7 @@ unsigned char dataBCC(const unsigned char *data, int dataSize){
   return dataInit;
 }
 
+/*
 int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField){
   
   if(controlField == UA || controlField == RR0 || controlField == RR1 || controlField == REJ0 || controlField == REJ1){
@@ -48,7 +49,6 @@ int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned c
       *addressField = FIELD_A_T_INIT;
     }
   }
-
   else if(controlField == SET || controlField == DISC){
     if(role == LlTx){ // if command from transmitter
       *addressField = FIELD_A_T_INIT;
@@ -62,6 +62,8 @@ int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned c
   }
   return 0;
 }
+*/
+
 
 int stuffIFrame (unsigned char *frame, int frameSize){
   unsigned char cpy[frameSize];

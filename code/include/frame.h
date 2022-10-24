@@ -1,10 +1,7 @@
 #ifndef _FRAME_H_
 #define _FRAME_H_
 
-#include "macros.h"
-#include "auxiliar.h"
 #include "state_machine.h"
-#include "alarm.h"
 
 int sendFrame(unsigned char* frame, int fd, int length);
 

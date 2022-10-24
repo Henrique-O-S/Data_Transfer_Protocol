@@ -2,11 +2,9 @@
 
 #include "unistd.h"
 
-#include "auxiliar.h"
+#include "link_layer.h"
 #include "frame.h"
 #include "port_operations.h"
-#include "macros.h"
-#include "alarm.h"
 
 // MISC
 #define _POSIX_SOURCE 1 // POSIX compliant source
@@ -20,6 +18,7 @@ int timeout;
 unsigned char frame[MAX_SIZE_FRAME];
 unsigned int frameLength;
 int seqNumber;
+extern int currentRetransmission, relay, stop;
 
 ////////////////////////////////////////////////
 // LLOPEN

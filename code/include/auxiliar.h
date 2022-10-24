@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#include "macros.h"
-#include "link_layer.h"
 #include "alarm.h"
 
 int util_get_LSB (int val, unsigned char *lsb);
@@ -20,7 +18,7 @@ unsigned char headerBCC (unsigned char address, unsigned char control);
 
 unsigned char dataBCC (const unsigned char *data, int dataSize);
 
-int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
+//int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
 
 int stuffIFrame (unsigned char *frame, int frameSize);
 

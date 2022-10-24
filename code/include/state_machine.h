@@ -10,6 +10,7 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+
 #include "auxiliar.h"
 #include "macros.h"
 

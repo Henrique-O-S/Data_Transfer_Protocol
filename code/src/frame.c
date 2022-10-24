@@ -1,5 +1,7 @@
 #include "frame.h"
 
+extern int currentRetransmission, relay, stop;
+
 int sendFrame(unsigned char* frame, int fd, int length) {
 
     int bytesWritten;
