@@ -27,7 +27,7 @@ typedef struct state_machine {
     unsigned char* controlBytes;
     int controlBytesLength;
     unsigned char addressByte;
-    int ControlByteIndex;
+    int controlByteIndex;
     int dataLength;
 } state_machine_st;
 

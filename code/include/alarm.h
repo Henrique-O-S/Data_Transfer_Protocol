@@ -2,12 +2,14 @@
 #define _ALARM_H_
 
 #include <stdio.h>
+#include <unistd.h>
 #include <signal.h>
 
-#include "application_layer.h"
+#include "link_layer.h"
 #include "macros.h"
 
-int currentRetransmission, relay = FALSE, stop = FALSE; 
+int currentRetransmission, relay = FALSE, stop = FALSE;
+extern nRetransmissions, timeout;
 
 void alarmHandler(int signal);
 

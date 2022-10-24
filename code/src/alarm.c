@@ -1,9 +1,9 @@
 #include "alarm.h"
 
 void alarmHandler(int signal){
-    if(linklayer.nRetransmissions > currentRetransmission){
+    if(nRetransmissions > currentRetransmission){
         relay = TRUE;
-        alarm(linklayer.timeout);
+        alarm(timeout);
         currentRetransmission++;
         printf("Timeout or invalide value: resending...\n");
     }

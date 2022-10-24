@@ -24,7 +24,7 @@
 struct termios oldtio;
 struct termios newtio;
 
-int set_up_port(const char *serialPortName);
-int close_port(int *fd);
+int set_up_port(char *serialPortName);
+int close_port(int fd);
 
 #endif // _PORT_OPERATIONS_H_

@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "auxiliar.h": "c"
+        "auxiliar.h": "c",
+        "application_layer.h": "c",
+        "link_layer.h": "c"
     }
 }

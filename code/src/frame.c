@@ -10,7 +10,7 @@ int sendFrame(unsigned char* frame, int fd, int length) {
     return bytesWritten;
 }
 
-int createIFrame(unsigned char* frame, unsigned char control, unsigned char* data, int dataSize) {
+int createIFrame(unsigned char* frame, unsigned char control, const unsigned char* data, int dataSize) {
 
   frame[0] = FLAG;
 
@@ -52,7 +52,7 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     unsigned char byte;
 
-    while(st->state != STOP && stop != 1 && !relay) {
+    while(sm->state != STOP && stop != 1 && !relay) {
         if(readByte(&byte, fd) == 0)
           event_handler(sm, byte, frame, SUPERVISION);
     }
@@ -74,7 +74,7 @@ int readIFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     unsigned char byte;
 
-    while(st->state != STOP) {
+    while(sm->state != STOP) {
         if(readByte(&byte, fd) == 0)
           event_handler(sm, byte, frame, INFORMATION);
     }

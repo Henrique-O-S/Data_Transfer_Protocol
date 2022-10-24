@@ -1,6 +1,7 @@
 #ifndef _AUXILIAR_FUNCTIONS_H_
 #define _AUXILIAR_FUNCTIONS_H_
 
+#include <stdlib.h>
 #include <signal.h>
 
 #include "macros.h"
@@ -17,7 +18,7 @@ int get_size_in_bytes (int fileSize, int *byteCount);
 
 unsigned char headerBCC (unsigned char address, unsigned char control);
 
-unsigned char dataBCC (unsigned char *data, int dataSize);
+unsigned char dataBCC (const unsigned char *data, int dataSize);
 
 int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
 

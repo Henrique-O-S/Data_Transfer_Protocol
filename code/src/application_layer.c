@@ -1,5 +1,7 @@
 // Application layer protocol implementation
 
+#include <string.h>
+
 #include "application_layer.h"
 #include "link_layer.h"
 #include "auxiliar.h"
@@ -17,7 +19,7 @@ int buildDataPacket(unsigned char *packet, int sequenceNumber, unsigned char *da
 
     packet[1] = (unsigned char)sequenceNumber;
 
-    int l1, l2;
+    unsigned char l1, l2;
     util_get_MSB(dataLength, &l2);
     util_get_LSB(dataLength, &l1);
 
@@ -55,8 +57,6 @@ int buildControlPacket(unsigned char *packet, unsigned char control, int fileSiz
     packet[0] = control;
 
     packet[1] = TYPE_FILE_SIZE;
-
-    int remainingFileSize = fileSize;
 
     int byteCount;
 
@@ -137,7 +137,10 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
     strcpy(linklayer.serialPort, serialPort);
-    linklayer.role = role;
+    if(role == 0)
+        linklayer.role = LlTx;
+    else
+        linklayer.role = LlRx;
     linklayer.baudRate = baudRate;
     linklayer.nRetransmissions = nTries;
     linklayer.timeout = timeout;

@@ -150,7 +150,7 @@ void event_handler(state_machine_st* sm, unsigned char byte, unsigned char* fram
                 i = (int) FLAG_RCV;
             }
             else {
-              if (isWanted(byte, sm) >= 0){
+              if (isControlByte(byte, sm) >= 0){
                 change_state(sm, C_RCV);
                 frame[i++] = byte;
               }

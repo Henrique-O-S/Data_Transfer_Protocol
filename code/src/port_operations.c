@@ -1,6 +1,6 @@
 #include "port_operations.h"
 
-int set_up_port(const char *serialPortName){
+int set_up_port(char *serialPortName){
 
     // Open serial port device for reading and writing, and not as controlling tty
     // because we don't want to get killed if linenoise sends CTRL-C.
@@ -51,7 +51,7 @@ int set_up_port(const char *serialPortName){
     return fd;
 }
 
-int close_port(int *fd){
+int close_port(int fd){
 
     sleep(1);
 
