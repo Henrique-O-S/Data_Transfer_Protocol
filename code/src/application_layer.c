@@ -217,6 +217,7 @@ int sendFile(const char *filename, char *serialPort)
 }
 
 int receiveFile(char *filename, char *serialPort){
+    printf("passou\n");
     unsigned char cSPacket[MAX_PACK_SIZE];
     char packetFilename[255];
     int fileSize;
@@ -288,9 +289,9 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
                       int nTries, int timeout, const char *filename)
 {
     strcpy(linklayer.serialPort, serialPort);
-    if(role == "tx")
+    if(strcmp(role, "tx") == 0)
         linklayer.role = LlTx;
-    else if(role == "rx")
+    else if(strcmp(role, "rx") == 0)
         linklayer.role = LlRx;
     else{
         perror("Role not defined");
@@ -306,5 +307,8 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     else if(linklayer.role == LlRx)
     {
         receiveFile(filename, serialPort);
+    }
+    else{
+        perror("Role not defined");
     }
 }
