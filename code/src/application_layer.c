@@ -241,7 +241,7 @@ int sendFile(char *filename, char *serialPort)
 
 int receiveFile(char *filename, char *serialPort){
     unsigned char cSPacket[MAX_PACK_SIZE];
-    char filename[255];
+    char packetFilename[255];
     int fileSize;
 
     int packetSize = llread(cSPacket);
@@ -250,7 +250,7 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    if(parseControlPacket(cSPacket, &fileSize, filename && cSPacket[0] != CTRL_START)){
+    if(parseControlPacket(cSPacket, &fileSize, packetFilename && cSPacket[0] != CTRL_START)){
         return -1;
     }
 
