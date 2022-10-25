@@ -252,13 +252,15 @@ int llread(unsigned char *packet)
             close_port(fd);
             return -1;
         }
+        printf("%d\n", bytesRead);
+        printf("%d\n", packetSize);
         
-        /*
-        for(int i = 0; i < 1040; i++){
+        
+        /* for(int i = 0; i < 1040; i++){
             printf("%x ", frame[i]);
         }
-        printf("\n");
-        */
+        printf("\n"); */
+        
 
         int controlByte;
         if(frame[2] == NS0){
@@ -274,9 +276,9 @@ int llread(unsigned char *packet)
         }
 
         int responseByte;
-        //printf("%x\n", frame[4 + packetSize - 1]);
-        //printf("%x\n", dataBCC(&frame[4], packetSize - 1));
-        if (frame[4 + packetSize - 1] == dataBCC(&frame[4], packetSize - 1)){
+       /*  printf("%x\n", frame[packetSize - 2]);
+        printf("%x\n", dataBCC(&frame[4], packetSize - 6)); */
+        if (frame[packetSize - 2] == dataBCC(&frame[4], packetSize - 6)){
             if(controlByte != seqNumber){
                 if(controlByte == 0){
                     seqNumber = 1;
@@ -346,7 +348,7 @@ int llread(unsigned char *packet)
         printf("Response sent\n");
     }
 
-    return packetSize - 1;
+    return packetSize - 6;
 }
 
 ////////////////////////////////////////////////

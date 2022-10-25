@@ -214,7 +214,7 @@ int sendFile(const char *filename, char *serialPort)
 }
 
 int receiveFile(char *filename, char *serialPort){
-    unsigned char cSPacket[MAX_PACK_SIZE];
+    unsigned char cPacket[MAX_PACK_SIZE];
     char packetFilename[255];
     int fileSize;
 
@@ -223,7 +223,7 @@ int receiveFile(char *filename, char *serialPort){
     }
 
     printf("passou 1 llopen\n");
-    int packetSize = llread(cSPacket);
+    int packetSize = llread(cPacket);
 
     printf("passou 1 llread\n");
 
@@ -232,7 +232,7 @@ int receiveFile(char *filename, char *serialPort){
     }
     printf("passou packetsize\n");
 
-    if(parseControlPacket(cSPacket, &fileSize, packetFilename) && cSPacket[0] != 0){
+    if(parseControlPacket(cPacket, &fileSize, packetFilename) && cPacket[0] != 0){
         return 1;
     }
 
@@ -261,10 +261,11 @@ int receiveFile(char *filename, char *serialPort){
                 return 1;
             }
             if(sequenceNumber != getSequenceNumber(n)){
-                printf("Different sequence numbers");
+                printf("Different sequence numbers\n");
                 closeFile(file);
                 return 1;
             }
+            n++;
         }
         if(writeBytesToFile(file, data, packetSize - 4) != packetSize - 4){
             closeFile(file);
@@ -272,21 +273,22 @@ int receiveFile(char *filename, char *serialPort){
         }
     } while (dPacket[0] != CTRL_END);
     closeFile(file);
-    unsigned char cEPacket[MAX_PACK_SIZE];
 
     int newFileSize;
     unsigned char newFileName[255];
-    if(parseControlPacket(cEPacket, &newFileSize, newFileName))
+    if(parseControlPacket(cPacket, &newFileSize, newFileName) != 0)
     {
+        printf("Error parsing control packet\n");
         return 1;
     }
 
-    if(strcmp(filename, newFileName) || fileSize != newFileSize){
-        printf("Files aren't the same");
+    if(strcmp(filename, newFileName) != 0 || fileSize != newFileSize){
+        printf("Files aren't the same\n");
         return 1;
     }
 
     if(llclose(0) == -1){
+        printf("Error closing file\n");
         return 1;
     }
     return 0;
@@ -301,7 +303,7 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     else if(strcmp(role, "rx") == 0)
         linklayer.role = LlRx;
     else{
-        perror("Role not defined");
+        perror("Role not defined\n");
     }
     linklayer.baudRate = baudRate;
     linklayer.nRetransmissions = nTries;
@@ -310,18 +312,16 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     if (linklayer.role == LlTx)
     {
         if((sendFile(filename, serialPort) != 0)){
-            printf("Error sending file");
+            printf("Error sending file\n");
         }
     }
     else if(linklayer.role == LlRx)
     {
         if((receiveFile(filename, serialPort) != 0)){
-            printf("Error receiving file");
+            printf("Error receiving file\n");
         }
     }
     else{
         perror("Role not defined");
     }
-
-    printf("Operation ocurred successfully");
 }

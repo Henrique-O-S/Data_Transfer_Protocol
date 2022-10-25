@@ -86,6 +86,6 @@ int readIFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     destroy_st(sm);
 
-    return ret;
+    return ret + 5;
 
 }
