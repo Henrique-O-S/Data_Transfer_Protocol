@@ -86,7 +86,7 @@ int llopen(LinkLayer connectionParameters)
 
         printf("UA received\n");
 
-        return fd;
+        return 1;
     }
 
     if(connectionParameters.role == LlRx){
@@ -110,7 +110,7 @@ int llopen(LinkLayer connectionParameters)
         }
         printf("UA sent\n");
 
-        return fd;
+        return 1;
     }
 
     perror("Invalid role");

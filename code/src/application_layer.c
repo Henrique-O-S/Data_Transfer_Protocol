@@ -146,7 +146,7 @@ int sendFile(const char *filename, char *serialPort)
         printf("ERROR OPENING FILE!\n");
         return 1;
     }
-    if (llopen(linklayer))
+    if (llopen(linklayer) == -1)
     {
         return 1;
     }
@@ -156,7 +156,7 @@ int sendFile(const char *filename, char *serialPort)
     unsigned char cSPacket[MAX_PACK_SIZE];
     int packetSize = buildControlPacket(cSPacket, START, fileSize, filename);
 
-    if (llwrite(cSPacket, packetSize))
+    if (llwrite(cSPacket, packetSize) == -1)
     {
         if (closeFile(file))
         {
@@ -184,7 +184,7 @@ int sendFile(const char *filename, char *serialPort)
         }
         packetSize = buildDataPacket(dPacket, getSequenceNumber(n), data, bytesRead);
         n++;
-        if (llwrite(dPacket, packetSize))
+        if (llwrite(dPacket, packetSize) == -1)
         {
             if (closeFile(file))
             {
@@ -197,12 +197,12 @@ int sendFile(const char *filename, char *serialPort)
 
     packetSize = buildControlPacket(cEPacket, END_TRANSFER, fileSize, filename);
 
-    if (llwrite(cEPacket, packetSize))
+    if (llwrite(cEPacket, packetSize) == -1)
     {
         return 1;
     }
 
-    if (llclose(0))
+    if (llclose(0) == -1)
     {
         return 1;
     }
@@ -219,7 +219,7 @@ int receiveFile(char *filename, char *serialPort){
     char packetFilename[255];
     int fileSize;
 
-    if(llopen(linklayer)){
+    if(llopen(linklayer) == -1){
         return 1;
     }
 
@@ -283,7 +283,7 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    if(llclose(0)){
+    if(llclose(0) == -1){
         return 1;
     }
     return 0;
