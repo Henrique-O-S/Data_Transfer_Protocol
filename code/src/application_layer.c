@@ -230,10 +230,14 @@ int receiveFile(char *filename, char *serialPort){
     if (packetSize < 0){
         return 1;
     }
+    printf("passou packetsize\n");
 
-    if(parseControlPacket(cSPacket, &fileSize, packetFilename) && cSPacket[0] != CTRL_START){
-        return -1;
+    if(parseControlPacket(cSPacket, &fileSize, packetFilename) && cSPacket[0] != 0){
+        return 1;
     }
+
+    printf("passou parsecontrolpacket\n");
+
     FILE *file = openFile(filename, "w");
     if(file == NULL){
         return 1;
@@ -305,13 +309,19 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
 
     if (linklayer.role == LlTx)
     {
-        sendFile(filename, serialPort);
+        if((sendFile(filename, serialPort) != 0)){
+            printf("Error sending file");
+        }
     }
     else if(linklayer.role == LlRx)
     {
-        receiveFile(filename, serialPort);
+        if((receiveFile(filename, serialPort) != 0)){
+            printf("Error receiving file");
+        }
     }
     else{
         perror("Role not defined");
     }
+
+    printf("Operation ocurred successfully");
 }

@@ -31,6 +31,10 @@ unsigned char headerBCC(unsigned char address, unsigned char control){
 }
 
 unsigned char dataBCC(const unsigned char *data, int dataSize){
+  for(int i = 0; i < dataSize; i++){
+            printf("%x ", data[i]);
+        }
+  printf("\n");
   unsigned char dataInit = data[0];
   for(int i = 1; i < dataSize; i++){
     dataInit = dataInit ^ data[i];
