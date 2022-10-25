@@ -240,10 +240,12 @@ int llread(unsigned char *packet)
             return -1;
         }
         
+        /*
         for(int i = 0; i < 1040; i++){
             printf("%x ", frame[i]);
         }
         printf("\n");
+        */
 
         if((packetSize = unstuffIFrame(frame, bytesRead)) < 0){
             printf("Troubles unstuffing. Closing file\n");
@@ -251,10 +253,12 @@ int llread(unsigned char *packet)
             return -1;
         }
         
+        /*
         for(int i = 0; i < 1040; i++){
             printf("%x ", frame[i]);
         }
         printf("\n");
+        */
 
         int controlByte;
         if(frame[2] == NS0){
@@ -270,8 +274,8 @@ int llread(unsigned char *packet)
         }
 
         int responseByte;
-        printf("%x\n", frame[4 + packetSize - 1]);
-        printf("%x\n", dataBCC(&frame[4], packetSize - 1));
+        //printf("%x\n", frame[4 + packetSize - 1]);
+        //printf("%x\n", dataBCC(&frame[4], packetSize - 1));
         if (frame[4 + packetSize - 1] == dataBCC(&frame[4], packetSize - 1)){
             if(controlByte != seqNumber){
                 if(controlByte == 0){
