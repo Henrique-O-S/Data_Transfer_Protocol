@@ -353,8 +353,9 @@ int llclose(int showStatistics)
 
         alarm(timeout);
 
+        unsigned char controlByte[1] = {DISC};
         while(!stop){
-            bytesRead = readSFrame(frame, fd, DISC, 1, FIELD_A_R_INIT);
+            bytesRead = readSFrame(frame, fd, controlByte, 1, FIELD_A_R_INIT);
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
@@ -399,8 +400,9 @@ int llclose(int showStatistics)
         }
     }
     else if(role == LlRx){
+        unsigned char controlByteCommand[1] = {DISC};
 
-        if (readSFrame(frame, fd, DISC, 1, FIELD_A_T_INIT) != 0){
+        if (readSFrame(frame, fd, controlByteCommand, 1, FIELD_A_T_INIT) != 0){
              printf("Troubles receiving command. Closing file\n");
             close_port(fd);
             return -1;
@@ -429,8 +431,9 @@ int llclose(int showStatistics)
 
         alarm(timeout);
 
+        unsigned char controlByteResponse[1] = {UA};
         while(!stop){
-            bytesRead = readSFrame(frame, fd, UA, 1, FIELD_A_R_INIT);
+            bytesRead = readSFrame(frame, fd, controlByteResponse, 1, FIELD_A_R_INIT);
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
