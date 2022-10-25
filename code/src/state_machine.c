@@ -78,8 +78,9 @@ void event_handler(state_machine_st* sm, unsigned char byte, unsigned char* fram
           break;
 
       case A_RCV:
-          if (byte == FLAG)
-              change_state(sm, FLAG_RCV);
+          if (byte == FLAG){
+                change_state(sm, FLAG_RCV);
+            }
           else {
               int n;
               if ((n = isControlByte(byte, sm))>=0){

@@ -140,14 +140,12 @@ int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
 
 int sendFile(const char *filename, char *serialPort)
 {
-    printf("passou\n");
     FILE *file = openFile(filename, "r");
     if (file == NULL)
     {
         printf("ERROR OPENING FILE!\n");
         return 1;
     }
-    printf("abriu\n");
     if (llopen(linklayer))
     {
         return 1;
@@ -217,7 +215,6 @@ int sendFile(const char *filename, char *serialPort)
 }
 
 int receiveFile(char *filename, char *serialPort){
-    printf("passou\n");
     unsigned char cSPacket[MAX_PACK_SIZE];
     char packetFilename[255];
     int fileSize;
@@ -306,8 +303,6 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     linklayer.baudRate = baudRate;
     linklayer.nRetransmissions = nTries;
     linklayer.timeout = timeout;
-
-    printf("dass\n");
 
     if (linklayer.role == LlTx)
     {

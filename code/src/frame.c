@@ -55,8 +55,9 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
     unsigned char byte;
 
     while(sm->state != STOP && stop != 1 && !relay) {
-        if(readByte(&byte, fd) == 0)
+        if(readByte(&byte, fd) == 0){
           event_handler(sm, byte, frame, SUPERVISION);
+        }
     }
 
     int ret = sm->controlByteIndex;

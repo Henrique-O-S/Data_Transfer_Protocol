@@ -35,7 +35,8 @@ int llopen(LinkLayer connectionParameters)
         printf("Couldn't open port communication");
         return -1;
     }
-    // install alarm handler here
+    
+    alarmHandlerInstaller();
 
     frameLength = BUF_SIZE_SF;
 
@@ -43,7 +44,7 @@ int llopen(LinkLayer connectionParameters)
 
         unsigned char responseBuffer[BUF_SIZE_SF];
 
-        if (createSFrame(frame, SET, FIELD_A_T_INIT) != 0){
+        if (createSFrame(frame, FIELD_A_T_INIT, SET) != 0){
             close_port(fd);
             return -1;
         }
@@ -61,9 +62,10 @@ int llopen(LinkLayer connectionParameters)
         relay = FALSE;
 
         alarm(timeout);
-
+        
+        unsigned char controlByte[1] = {UA};
         while(!stop){
-            bytesRead = readSFrame(responseBuffer, fd, UA, 1, FIELD_A_T_INIT);
+            bytesRead = readSFrame(responseBuffer, fd, controlByte, 1, FIELD_A_T_INIT);
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
@@ -97,7 +99,7 @@ int llopen(LinkLayer connectionParameters)
         }
         printf("SET received\n");
 
-        if(createSFrame(frame, UA, FIELD_A_T_INIT) != 0){
+        if(createSFrame(frame, FIELD_A_T_INIT, UA) != 0){
             close_port(fd);
             return -1;
         }
@@ -406,7 +408,7 @@ int llclose(int showStatistics)
 
         printf("DISC received\n");
 
-        if(createSFrame(frame, DISC, FIELD_A_R_INIT) != 0){
+        if(createSFrame(frame, FIELD_A_R_INIT, DISC) != 0){
              printf("Troubles sending command. Closing file\n");
             close_port(fd);
             return -1;

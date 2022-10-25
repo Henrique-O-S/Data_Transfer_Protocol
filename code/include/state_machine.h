@@ -76,4 +76,4 @@ void event_handler(state_machine_st* sm, unsigned char byte, unsigned char* fram
  */
 void destroy_st(state_machine_st* sm);
 
-#endif // _STATE_MACHINE_
+#endif // _STATE_MACHINE_H_
