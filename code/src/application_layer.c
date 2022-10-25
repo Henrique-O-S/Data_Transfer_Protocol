@@ -150,7 +150,6 @@ int sendFile(const char *filename, char *serialPort)
     {
         return 1;
     }
-    printf("open\n");
 
     int fileSize = getFileSize(file);
     unsigned char cSPacket[MAX_PACK_SIZE];
@@ -223,10 +222,10 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    printf("passou 1 llopen");
+    printf("passou 1 llopen\n");
     int packetSize = llread(cSPacket);
 
-    printf("passou 1 llread");
+    printf("passou 1 llread\n");
 
     if (packetSize < 0){
         return 1;

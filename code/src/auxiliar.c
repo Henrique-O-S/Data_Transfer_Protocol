@@ -102,7 +102,7 @@ int unstuffIFrame (unsigned char *frame, int frameSize){
     cpy[i] = frame[i];
   }
 
-  for(int i = 4; i < frameSize + shift; i++){  // only stuff data field of I FRAME
+  for(int i = 4; i < frameSize; i++){  // only stuff data field of I FRAME
     if(cpy[i] == FLAG_STUF1 && cpy[i+1] == FLAG_STUF2 && i != flagByteNo){
       frame[i] = FLAG;
       shift--;

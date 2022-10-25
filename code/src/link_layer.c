@@ -160,7 +160,7 @@ int llwrite(const unsigned char *buf, int bufSize)
         printf("Information sent\n");
 
         int bytesRead = -1;
-        stop = 0;
+        stop = FALSE;
         currentRetransmission = 0;
         relay = FALSE;
 
@@ -201,9 +201,11 @@ int llwrite(const unsigned char *buf, int bufSize)
             return -1;
         }
         else if(bytesRead == 0){
+            printf("rr\n");
             finished = TRUE;
         }
         else{
+            printf("rej\n");
             finished = FALSE;
         }
 
@@ -248,12 +250,17 @@ int llread(unsigned char *packet)
         if(frame[2] == NS0){
             controlByte = 0;
         }
-        else{
+        else if(frame[2] == NS1){
             controlByte = 1;
         }
-        int responseByte;
+        else{
+            printf("Control byte wrongly defined. Closing file\n");
+            close_port(fd);
+            return -1;
+        }
 
-        if (frame[packetSize - 2] == dataBCC(&frame[4], packetSize - 6)){
+        int responseByte;
+        if (frame[4 + packetSize - 1] == dataBCC(&frame[4], packetSize - 1)){
             if(controlByte != seqNumber){
                 if(controlByte == 0){
                     seqNumber = 1;
@@ -294,10 +301,12 @@ int llread(unsigned char *packet)
             }
             else{
                 if(controlByte == 0){
+                    printf("rej0\n");
                     seqNumber = 0;
                     responseByte = REJ0;
                 }
                 else{
+                    printf("rej1\n");
                     seqNumber = 1;
                     responseByte = REJ1;
                 }
