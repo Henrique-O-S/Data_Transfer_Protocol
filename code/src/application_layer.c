@@ -226,7 +226,10 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
+    printf("passou 1 llopen");
     int packetSize = llread(cSPacket);
+
+    printf("passou 1 llread");
 
     if (packetSize < 0){
         return 1;
