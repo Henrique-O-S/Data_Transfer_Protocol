@@ -80,13 +80,13 @@ int stuffIFrame (unsigned char *frame, int frameSize){
 
   for(int i = 4; i < frameSize + shift; i++){  // only stuff data field of I FRAME
     if(cpy[i] == FLAG && i != flagByteNo){
-      frame[i] = FLAG_STUF1;
-      frame[i+1] = FLAG_STUF2;
+      frame[i + shift] = FLAG_STUF1;
+      frame[i+1 + shift] = FLAG_STUF2;
       shift++;
     }
     else if(cpy[i] == ESC_BYTE){
-      frame[i] = ESC_BYTE_STUF1;
-      frame[i+1] = ESC_BYTE_STUF2;
+      frame[i + shift] = ESC_BYTE_STUF1;
+      frame[i + 1 + shift] = ESC_BYTE_STUF2;
       shift++;
     }
     else{
@@ -94,7 +94,6 @@ int stuffIFrame (unsigned char *frame, int frameSize){
     }
   }
   return frameSize + shift; // return new len
-
 }
 
 int unstuffIFrame (unsigned char *frame, int frameSize){
@@ -108,12 +107,12 @@ int unstuffIFrame (unsigned char *frame, int frameSize){
 
   for(int i = 4; i < frameSize; i++){  // only stuff data field of I FRAME
     if(cpy[i] == FLAG_STUF1 && cpy[i+1] == FLAG_STUF2 && i != flagByteNo){
-      frame[i] = FLAG;
+      frame[i + shift] = FLAG;
       shift--;
       i++;
     }
     else if(cpy[i] == ESC_BYTE_STUF1 && cpy[i+1] == ESC_BYTE_STUF2){
-      frame[i] = ESC_BYTE;
+      frame[i + shift] = ESC_BYTE;
       shift--;
       i++;
     }
