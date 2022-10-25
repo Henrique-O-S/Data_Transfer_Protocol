@@ -222,6 +222,10 @@ int receiveFile(char *filename, char *serialPort){
     char packetFilename[255];
     int fileSize;
 
+    if(llopen(linklayer)){
+        return 1;
+    }
+
     int packetSize = llread(cSPacket);
 
     if (packetSize < 0){
@@ -299,6 +303,8 @@ void applicationLayer(const char *serialPort, const char *role, int baudRate,
     linklayer.baudRate = baudRate;
     linklayer.nRetransmissions = nTries;
     linklayer.timeout = timeout;
+
+    printf("dass\n");
 
     if (linklayer.role == LlTx)
     {
