@@ -21,7 +21,7 @@ int util_join_bytes (int *ret, unsigned char msb, unsigned char lsb) {
 int get_size_in_bytes (int fileSize, int *byteCount){
   *byteCount = fileSize / BYTE_SIZE;
   if(fileSize % BYTE_SIZE > 0){
-    byteCount++;
+    *byteCount++;
   }
   return 1;
 }
@@ -30,13 +30,7 @@ unsigned char headerBCC(unsigned char address, unsigned char control){
   return address ^ control;
 }
 
-unsigned char dataBCC(const unsigned char *data, int dataSize){
-  
-  for(int i = 0; i < dataSize; i++){
-            printf("%x ", data[i]);
-        }
-  printf("\n");
-  
+unsigned char dataBCC(const unsigned char *data, int dataSize){ 
   unsigned char dataInit = data[0];
   for(int i = 1; i < dataSize; i++){
     dataInit = dataInit ^ data[i];

@@ -231,10 +231,11 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
     printf("passou packetsize\n");
-
+    printf("%d\n", fileSize);
     if(parseControlPacket(cPacket, &fileSize, packetFilename) && cPacket[0] != 0){
         return 1;
     }
+    printf("%d\n", fileSize);
 
     printf("passou parsecontrolpacket\n");
 
@@ -276,13 +277,15 @@ int receiveFile(char *filename, char *serialPort){
 
     int newFileSize;
     unsigned char newFileName[255];
-    if(parseControlPacket(cPacket, &newFileSize, newFileName) != 0)
+    if((parseControlPacket(dPacket, &newFileSize, newFileName) != 0) || dPacket[0] != END_TRANSFER)
     {
         printf("Error parsing control packet\n");
         return 1;
     }
 
-    if(strcmp(filename, newFileName) != 0 || fileSize != newFileSize){
+    printf("%d\n", fileSize);
+    printf("%d\n", newFileSize);
+    if((fileSize != newFileSize)){
         printf("Files aren't the same\n");
         return 1;
     }
