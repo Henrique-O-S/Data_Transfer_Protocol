@@ -21,7 +21,7 @@ int util_join_bytes (int *ret, unsigned char msb, unsigned char lsb) {
 int get_size_in_bytes (int fileSize, int *byteCount){
   *byteCount = fileSize / BYTE_SIZE;
   if(fileSize % BYTE_SIZE > 0){
-    *byteCount++;
+    byteCount++;
   }
   return 1;
 }

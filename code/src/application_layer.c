@@ -55,7 +55,7 @@ int parseDataPacket(unsigned char *packet, unsigned char *data, int *sequenceNum
     return 0;
 }
 
-int buildControlPacket(unsigned char *packet, unsigned char control, int fileSize, char *fileName)
+int buildControlPacket(unsigned char *packet, unsigned char control, int fileSize, const char *fileName)
 {
     packet[0] = control;
 
@@ -89,7 +89,7 @@ int buildControlPacket(unsigned char *packet, unsigned char control, int fileSiz
     return 5 + byteCount + filenameSize + 1; // returns len of buffer
 }
 
-int parseControlPacket(unsigned char *packet, int *fileSize, char *fileName)
+int parseControlPacket(unsigned char *packet, int *fileSize, unsigned char *fileName)
 {
 
     if (packet[0] != CTRL_START && packet[0] != CTRL_END)
@@ -153,7 +153,7 @@ int sendFile(const char *filename, char *serialPort)
 
     int fileSize = getFileSize(file);
     unsigned char cSPacket[MAX_PACK_SIZE];
-    int packetSize = buildControlPacket(cSPacket, START, fileSize, filename);
+    int packetSize = buildControlPacket(cSPacket, START_TRANSFER, fileSize, filename);
 
     if (llwrite(cSPacket, packetSize) == -1)
     {
@@ -215,29 +215,36 @@ int sendFile(const char *filename, char *serialPort)
 
 int receiveFile(char *filename, char *serialPort){
     unsigned char cPacket[MAX_PACK_SIZE];
-    char packetFilename[255];
-    int fileSize;
+    unsigned char packetFilename[255];
+    int fileSize = 0;
+    int packetSize;
 
     if(llopen(linklayer) == -1){
         return 1;
     }
 
-    printf("passou 1 llopen\n");
-    int packetSize = llread(cPacket);
-
-    printf("passou 1 llread\n");
-
-    if (packetSize < 0){
+    //printf("passou 1 llopen\n");
+    if((packetSize = llread(cPacket)) < 0){
+        printf("Error reading control packet");
         return 1;
     }
-    printf("passou packetsize\n");
-    printf("%d\n", fileSize);
-    if(parseControlPacket(cPacket, &fileSize, packetFilename) && cPacket[0] != 0){
+
+    //printf("passou 1 llread\n");
+    //printf("passou packetsize\n");
+    //printf("%d\n", fileSize);
+
+    /* for(int i = 0; i < MAX_PACK_SIZE; i++){
+        printf("%x ", cPacket[i]);
+    }
+    printf("\n"); */
+    
+    if(parseControlPacket(cPacket, &fileSize, packetFilename) != 0 || cPacket[0] != START_TRANSFER){
+        printf("Error parsing control packet\n");
         return 1;
     }
-    printf("%d\n", fileSize);
+    //printf("%d\n", fileSize);
 
-    printf("passou parsecontrolpacket\n");
+    //printf("passou parsecontrolpacket\n");
 
     FILE *file = openFile(filename, "w");
     if(file == NULL){
@@ -275,7 +282,7 @@ int receiveFile(char *filename, char *serialPort){
     } while (dPacket[0] != CTRL_END);
     closeFile(file);
 
-    int newFileSize;
+    int newFileSize = 0;
     unsigned char newFileName[255];
     if((parseControlPacket(dPacket, &newFileSize, newFileName) != 0) || dPacket[0] != END_TRANSFER)
     {
@@ -283,9 +290,16 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
+   /*  for(int i = 0; i < MAX_PACK_SIZE; i++){
+        printf("%x ", dPacket[i]);
+    }
+    printf("\n");
+
     printf("%d\n", fileSize);
     printf("%d\n", newFileSize);
-    if((fileSize != newFileSize)){
+    printf("%s\n", packetFilename);
+    printf("%s\n", newFileName); */
+    if((fileSize != newFileSize) || (strcmp(newFileName, packetFilename) != 0)){
         printf("Files aren't the same\n");
         return 1;
     }

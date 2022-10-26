@@ -53,8 +53,7 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
     state_machine_st *sm = create_state_machine(controlBytes, controlBytesLength, addressByte);
 
     unsigned char byte;
-
-    while(sm->state != STOP && stop != 1 && !relay) {
+    while(sm->state != STOP && stop != TRUE && !relay) {
         if(readByte(&byte, fd) == 0){
           event_handler(sm, byte, frame, SUPERVISION);
         }
@@ -64,7 +63,7 @@ int readSFrame(unsigned char* frame, int fd, unsigned char* controlBytes, int co
 
     destroy_st(sm);
 
-    if(stop == 1 || relay)
+    if(stop == TRUE || relay)
       return -1;
 
     return ret;

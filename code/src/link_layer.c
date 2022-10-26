@@ -56,7 +56,7 @@ int llopen(LinkLayer connectionParameters)
 
         printf("SET sent\n");
 
-        int stop = FALSE;
+        stop = FALSE;
         int bytesRead = -1;
         currentRetransmission = 0;
         relay = FALSE;
@@ -201,11 +201,9 @@ int llwrite(const unsigned char *buf, int bufSize)
             return -1;
         }
         else if(bytesRead == 0){
-            printf("rr\n");
             finished = TRUE;
         }
         else{
-            printf("rej\n");
             finished = FALSE;
         }
 
@@ -234,11 +232,7 @@ int llread(unsigned char *packet)
     
     while(!bufferFull){
 
-        if((bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT)) < 0){
-            printf("Troubles reading information. Closing file\n");
-            close_port(fd);
-            return -1;
-        }
+        bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT);
         
         /*
         for(int i = 0; i < 1040; i++){
@@ -252,8 +246,8 @@ int llread(unsigned char *packet)
             close_port(fd);
             return -1;
         }
-        printf("%d\n", bytesRead);
-        printf("%d\n", packetSize);
+        //printf("%d\n", bytesRead);
+        //printf("%d\n", packetSize);
         
         
         /* for(int i = 0; i < 1040; i++){
@@ -319,12 +313,10 @@ int llread(unsigned char *packet)
             }
             else{
                 if(controlByte == 0){
-                    printf("rej0\n");
                     seqNumber = 0;
                     responseByte = REJ0;
                 }
                 else{
-                    printf("rej1\n");
                     seqNumber = 1;
                     responseByte = REJ1;
                 }
@@ -373,7 +365,7 @@ int llclose(int showStatistics)
 
         printf("DISC sent\n");
 
-        int stop = FALSE;
+        stop = FALSE;
         int bytesRead = -1;
         currentRetransmission = 0;
         relay = FALSE;
@@ -382,7 +374,11 @@ int llclose(int showStatistics)
 
         unsigned char controlByte[1] = {DISC};
         while(!stop){
-            bytesRead = readSFrame(frame, fd, controlByte, 1, FIELD_A_R_INIT);
+
+            if((bytesRead = readSFrame(frame, fd, controlByte, 1, FIELD_A_R_INIT)) < 0){
+                printf("Error reading DISC\n");
+                return -1;
+            }
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
@@ -430,7 +426,7 @@ int llclose(int showStatistics)
         unsigned char controlByteCommand[1] = {DISC};
 
         if (readSFrame(frame, fd, controlByteCommand, 1, FIELD_A_T_INIT) != 0){
-             printf("Troubles receiving command. Closing file\n");
+            printf("Troubles receiving command. Closing file\n");
             close_port(fd);
             return -1;
         }
@@ -438,19 +434,19 @@ int llclose(int showStatistics)
         printf("DISC received\n");
 
         if(createSFrame(frame, FIELD_A_R_INIT, DISC) != 0){
-             printf("Troubles sending command. Closing file\n");
+            printf("Troubles sending command. Closing file\n");
             close_port(fd);
             return -1;
         }
 
         if(sendFrame(frame, fd, frameLength) < 0){
-             printf("Troubles sending command. Closing file\n");
+            printf("Troubles sending command. Closing file\n");
             close_port(fd);
             return -1;
         }
         printf("DISC sent\n");
 
-        int stop = FALSE;
+        stop = FALSE;
         int bytesRead = -1;
         currentRetransmission = 0;
         relay = FALSE;
@@ -460,7 +456,11 @@ int llclose(int showStatistics)
 
         unsigned char controlByteResponse[1] = {UA};
         while(!stop){
-            bytesRead = readSFrame(frame, fd, controlByteResponse, 1, FIELD_A_R_INIT);
+
+            if((bytesRead = readSFrame(frame, fd, controlByteResponse, 1, FIELD_A_R_INIT)) < 0){
+                printf("Error reading UA\n");
+                return -1;
+            }
 
             if(relay){
                 sendFrame(frame, fd, frameLength);
@@ -497,10 +497,6 @@ int llclose(int showStatistics)
     }
 
     if(close_port(fd) < 0){
-        return -1;
-    }
-
-    if(close(fd) < 0){
         return -1;
     }
 
