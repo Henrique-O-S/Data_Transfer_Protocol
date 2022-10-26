@@ -223,28 +223,15 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    //printf("passou 1 llopen\n");
     if((packetSize = llread(cPacket)) < 0){
         printf("Error reading control packet");
         return 1;
     }
-
-    //printf("passou 1 llread\n");
-    //printf("passou packetsize\n");
-    //printf("%d\n", fileSize);
-
-    /* for(int i = 0; i < MAX_PACK_SIZE; i++){
-        printf("%x ", cPacket[i]);
-    }
-    printf("\n"); */
     
     if(parseControlPacket(cPacket, &fileSize, packetFilename) != 0 || cPacket[0] != START_TRANSFER){
         printf("Error parsing control packet\n");
         return 1;
     }
-    //printf("%d\n", fileSize);
-
-    //printf("passou parsecontrolpacket\n");
 
     FILE *file = openFile(filename, "w");
     if(file == NULL){
@@ -291,16 +278,7 @@ int receiveFile(char *filename, char *serialPort){
         printf("Error parsing control packet\n");
         return 1;
     }
-
-   /*  for(int i = 0; i < MAX_PACK_SIZE; i++){
-        printf("%x ", dPacket[i]);
-    }
-    printf("\n");
-
-    printf("%d\n", fileSize);
-    printf("%d\n", newFileSize);
-    printf("%s\n", packetFilename);
-    printf("%s\n", newFileName); */
+    
     if((fileSize != newFileSize) || (strcmp(newFileName, packetFilename) != 0)){
         printf("Files aren't the same\n");
         return 1;

@@ -18,8 +18,6 @@ unsigned char headerBCC (unsigned char address, unsigned char control);
 
 unsigned char dataBCC (const unsigned char *data, int dataSize);
 
-//int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField);
-
 int stuffIFrame (unsigned char *frame, int frameSize);
 
 int unstuffIFrame (unsigned char *frame, int frameSize);

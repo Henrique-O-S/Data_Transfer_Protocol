@@ -38,33 +38,6 @@ unsigned char dataBCC(const unsigned char *data, int dataSize){
   return dataInit;
 }
 
-/*
-int getAddressField (unsigned char *addressField, LinkLayerRole role, unsigned char controlField){
-  
-  if(controlField == UA || controlField == RR0 || controlField == RR1 || controlField == REJ0 || controlField == REJ1){
-    if(role == LlTx){ // if response from transmiter
-      *addressField = FIELD_A_R_INIT;
-    }
-    else{ // if response from receiver
-      *addressField = FIELD_A_T_INIT;
-    }
-  }
-  else if(controlField == SET || controlField == DISC){
-    if(role == LlTx){ // if command from transmitter
-      *addressField = FIELD_A_T_INIT;
-    }
-    else{ // if command from receiver
-      *addressField = FIELD_A_R_INIT;
-    }
-  }
-  else{
-    return 1;
-  }
-  return 0;
-}
-*/
-
-
 int stuffIFrame (unsigned char *frame, int frameSize){
   unsigned char cpy[frameSize];
   int flagByteNo = frameSize - 1;
