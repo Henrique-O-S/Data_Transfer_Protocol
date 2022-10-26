@@ -233,28 +233,12 @@ int llread(unsigned char *packet)
     while(!bufferFull){
 
         bytesRead = readIFrame(frame, fd, controlBytes, 2, FIELD_A_T_INIT);
-        
-        /*
-        for(int i = 0; i < 1040; i++){
-            printf("%x ", frame[i]);
-        }
-        printf("\n");
-        */
 
         if((packetSize = unstuffIFrame(frame, bytesRead)) < 0){
             printf("Troubles unstuffing. Closing file\n");
             close_port(fd);
             return -1;
         }
-        //printf("%d\n", bytesRead);
-        //printf("%d\n", packetSize);
-        
-        
-        /* for(int i = 0; i < 1040; i++){
-            printf("%x ", frame[i]);
-        }
-        printf("\n"); */
-        
 
         int controlByte;
         if(frame[2] == NS0){
@@ -270,8 +254,6 @@ int llread(unsigned char *packet)
         }
 
         int responseByte;
-       /*  printf("%x\n", frame[packetSize - 2]);
-        printf("%x\n", dataBCC(&frame[4], packetSize - 6)); */
         if (frame[packetSize - 2] == dataBCC(&frame[4], packetSize - 6)){
             if(controlByte != seqNumber){
                 if(controlByte == 0){

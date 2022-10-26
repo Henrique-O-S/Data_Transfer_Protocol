@@ -275,9 +275,11 @@ int receiveFile(char *filename, char *serialPort){
             }
             n++;
         }
-        if(writeBytesToFile(file, data, packetSize - 4) != packetSize - 4){
-            closeFile(file);
-            return 1;
+        if(dPacket[0] != CTRL_END){
+            if((writeBytesToFile(file, data, packetSize - 4) != packetSize - 4)){
+                closeFile(file);
+                return 1;
+            }
         }
     } while (dPacket[0] != CTRL_END);
     closeFile(file);
