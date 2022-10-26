@@ -4,12 +4,14 @@ extern int currentRetransmission, relay, stop;
 
 int sendFrame(unsigned char* frame, int fd, int length) {
 
-    int bytesWritten;
-    if( (bytesWritten = write(fd, frame, length)) <= 0){
-        return -1;
-    }
+  int bytesWritten;
+  if( (bytesWritten = write(fd, frame, length)) <= 0){
+      return -1;
+  }
 
-    return bytesWritten;
+  sleep(1);
+  
+  return bytesWritten;
 }
 
 int createIFrame(unsigned char* frame, unsigned char control, const unsigned char* data, int dataSize) {
