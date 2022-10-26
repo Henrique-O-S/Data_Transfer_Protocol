@@ -1,6 +1,8 @@
 // Link layer protocol implementation
 
 #include "unistd.h"
+#include <sys/time.h>
+#include <stdio.h>
 
 #include "link_layer.h"
 #include "frame.h"
@@ -19,6 +21,8 @@ unsigned char frame[MAX_SIZE_FRAME];
 unsigned int frameLength;
 int seqNumber;
 extern int currentRetransmission, relay, stop;
+int bitsReceived = 0;
+struct timeval start, end;
 
 ////////////////////////////////////////////////
 // LLOPEN
@@ -112,6 +116,8 @@ int llopen(LinkLayer connectionParameters)
 
         return 1;
     }
+
+    gettimeofday(&start , NULL);
 
     perror("Invalid role");
     close_port(fd);
@@ -322,6 +328,7 @@ int llread(unsigned char *packet)
         printf("Response sent\n");
     }
 
+    bitsReceived += (packetSize - 6) * 8;
     return packetSize - 6;
 }
 
@@ -462,21 +469,26 @@ int llclose(int showStatistics)
         }
 
         printf("UA received\n");
-
-        if(showStatistics == TRUE){
-            printf("Show statistics");
-            /*
-            -
-            -
-            -
-            */
-        }
     }
     else{
         perror("Invalid role");
         close_port(fd);
         return -1;
     }
+
+    gettimeofday(&end, NULL);
+    double time_spent = (end.tv_sec - start.tv_sec) * 1e6;
+    time_spent = (time_spent +(end.tv_usec - start.tv_usec)) * 1e-6;
+
+    if(showStatistics == TRUE){
+        printf("Bits Received =  %d\n", bitsReceived);
+        printf("Time spent =  %lf\n", time_spent);
+        double R =  bitsReceived/time_spent;
+        double S = R / baudRate;
+
+        printf("Baudrate = %lf\n", R);
+        printf("Estatitica da eficiencia S = %lf\n", S);
+        }
 
     if(close_port(fd) < 0){
         return -1;
