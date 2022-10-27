@@ -114,10 +114,11 @@ int llopen(LinkLayer connectionParameters)
         }
         printf("UA sent\n");
 
+        gettimeofday(&start, NULL);
+        printf("Time spent =  %f\n", start.tv_sec);
+
         return 1;
     }
-
-    gettimeofday(&start, NULL);
 
     perror("Invalid role");
     close_port(fd);
@@ -462,6 +463,7 @@ int llclose(int showStatistics)
         printf("UA received\n");
 
         gettimeofday(&end, NULL);
+        printf("Time spent =  %f\n", start.tv_sec);
         double time_spent = end.tv_sec - start.tv_sec;
 
         if(showStatistics == TRUE){
