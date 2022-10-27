@@ -117,7 +117,7 @@ int llopen(LinkLayer connectionParameters)
         return 1;
     }
 
-    gettimeofday(&start , NULL);
+    gettimeofday(&start, NULL);
 
     perror("Invalid role");
     close_port(fd);
@@ -460,26 +460,25 @@ int llclose(int showStatistics)
         }
 
         printf("UA received\n");
+
+        gettimeofday(&end, NULL);
+        double time_spent = end.tv_sec - start.tv_sec;
+
+        if(showStatistics == TRUE){
+            printf("Bits Received =  %d\n", bitsReceived);
+            printf("Time spent =  %f\n", time_spent);
+            double R =  bitsReceived/time_spent;
+            double S = R / baudRate;
+
+            printf("Debit received = %lf\n", R);
+            printf("Efficiency S = %lf\n", S);
+        }
     }
     else{
         perror("Invalid role");
         close_port(fd);
         return -1;
     }
-
-    gettimeofday(&end, NULL);
-    double time_spent = (end.tv_sec - start.tv_sec) * 1e6;
-    time_spent = (time_spent +(end.tv_usec - start.tv_usec)) * 1e-6;
-
-    if(showStatistics == TRUE){
-        printf("Bits Received =  %d\n", bitsReceived);
-        printf("Time spent =  %lf\n", time_spent);
-        double R =  bitsReceived/time_spent;
-        double S = R / baudRate;
-
-        printf("Baudrate = %lf\n", R);
-        printf("Estatitica da eficiencia S = %lf\n", S);
-        }
 
     if(close_port(fd) < 0){
         return -1;

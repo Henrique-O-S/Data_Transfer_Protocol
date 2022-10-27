@@ -201,7 +201,7 @@ int sendFile(const char *filename, char *serialPort)
         return 1;
     }
 
-    if (llclose(0) == -1)
+    if (llclose(1) == -1)
     {
         return 1;
     }
@@ -284,7 +284,7 @@ int receiveFile(char *filename, char *serialPort){
         return 1;
     }
 
-    if(llclose(0) == -1){
+    if(llclose(1) == -1){
         printf("Error closing file\n");
         return 1;
     }
