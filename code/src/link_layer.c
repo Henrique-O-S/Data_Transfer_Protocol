@@ -465,6 +465,7 @@ int llclose(int showStatistics)
         gettimeofday(&end, NULL);
         printf("Time spent =  %f\n", start.tv_sec);
         double time_spent = end.tv_sec - start.tv_sec;
+        time_spent += (end.tv_usec - start.tv_usec) / 1000000;
 
         if(showStatistics == TRUE){
             printf("Bits Received =  %d\n", bitsReceived);
