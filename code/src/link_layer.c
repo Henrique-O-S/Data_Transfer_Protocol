@@ -1,7 +1,7 @@
 // Link layer protocol implementation
 
 #include "unistd.h"
-#include <time.h>
+#include <sys/times.h>
 #include <stdio.h>
 
 #include "link_layer.h"
@@ -22,7 +22,7 @@ unsigned int frameLength;
 int seqNumber;
 extern int currentRetransmission, relay, stop;
 int bitsReceived = 0;
-clock_t start, end;
+struct timeval start, end;
 
 ////////////////////////////////////////////////
 // LLOPEN
@@ -114,8 +114,7 @@ int llopen(LinkLayer connectionParameters)
         }
         printf("UA sent\n");
 
-        start = clock();
-        printf("Time spent =  %ld\n", start);
+        gettimeofday(&start, NULL);
 
         return 1;
     }
@@ -462,10 +461,8 @@ int llclose(int showStatistics)
 
         printf("UA received\n");
 
-        end = clock();
-        printf("Time spent =  %ld\n", end);
-        double time_spent = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("%ld\n", CLOCKS_PER_SEC);
+        gettimeofday(&end, NULL);
+        double time_spent = ((end.tv_sec - start.tv_sec) * 1e6 + (end.tv_usec - start.tv_usec)) * 1e-6;
 
         if(showStatistics == TRUE){
             printf("Bits Received =  %d\n", bitsReceived);
