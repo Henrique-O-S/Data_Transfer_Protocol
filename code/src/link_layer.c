@@ -401,15 +401,6 @@ int llclose(int showStatistics)
         }
 
         printf("UA sent\n");
-
-        if(showStatistics == TRUE){
-            printf("Show statistics");
-            /*
-            -
-            -
-            -
-            */
-        }
     }
     else if(role == LlRx){
         unsigned char controlByteCommand[1] = {DISC};
