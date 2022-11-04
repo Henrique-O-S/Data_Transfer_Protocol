@@ -222,7 +222,7 @@ int receiveFile(char *filename, char *serialPort){
     if(llopen(linklayer) == -1){
         return 1;
     }
-
+    
     if((packetSize = llread(cPacket)) < 0){
         printf("Error reading control packet");
         return 1;
